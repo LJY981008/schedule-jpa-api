@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.rmi.ServerException;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -23,5 +25,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAlreadyAccountException(AlreadyAccountException ex) {
         String message = ex.getMessage();
         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(message);
+    }
+
+    // 세션 인증 실패 핸들러
+    @ExceptionHandler(ServerException.class)
+    public ResponseEntity<String> handleServerException(ServerException ex) {
+        String message = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 }
