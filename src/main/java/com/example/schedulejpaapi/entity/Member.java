@@ -1,5 +1,6 @@
 package com.example.schedulejpaapi.entity;
 
+import com.example.schedulejpaapi.dto.MemberSignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -15,13 +16,13 @@ public class Member extends TimeStampEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "account", nullable = false)
+    @Column(name = "account", nullable = false, unique = true)
     private String account;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "name", nullable = false)
@@ -33,10 +34,10 @@ public class Member extends TimeStampEntity {
     public Member() {
     }
 
-    public Member(String account, String password, String email, String name) {
-        this.account = account;
-        this.password = password;
-        this.email = email;
-        this.name = name;
+    public Member(MemberSignupRequestDto requestDto) {
+        this.account = requestDto.getAccount();
+        this.password = requestDto.getPassword();
+        this.email = requestDto.getEmail();
+        this.name = requestDto.getName();
     }
 }
