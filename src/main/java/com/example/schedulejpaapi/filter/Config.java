@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class Config {
     @Bean
-    public FilterRegistrationBean<Filter> loginFilter(FilterRegistrationBean<Filter> filterRegistrationBean) {
+    public FilterRegistrationBean<Filter> loginFilter() {
         FilterRegistrationBean<Filter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new LoginFilter());
         registrationBean.setOrder(1);
-        filterRegistrationBean.addUrlPatterns("/*");
+        registrationBean.addUrlPatterns("/*");
         return registrationBean;
     }
 }

@@ -1,16 +1,17 @@
 package com.example.schedulejpaapi.controller;
 
+import com.example.schedulejpaapi.constant.Const;
+import com.example.schedulejpaapi.dto.MemberLoginRequestDto;
+import com.example.schedulejpaapi.dto.MemberLoginResponseDto;
 import com.example.schedulejpaapi.dto.MemberSignupRequestDto;
 import com.example.schedulejpaapi.dto.MemberSignupResponseDto;
 import com.example.schedulejpaapi.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/member")
@@ -23,13 +24,30 @@ public class MemberController {
     }
 
     // 회원 가입
-    //TODO 쿠키세션 또는 토큰 이벤트 구현 필요
     @PostMapping("/signup")
     public ResponseEntity<MemberSignupResponseDto> signup(
-            @Valid @RequestBody MemberSignupRequestDto requestDto
+            @Valid @RequestBody MemberSignupRequestDto requestDto,
+            HttpServletRequest request
     ) {
         MemberSignupResponseDto result = memberService.signup(requestDto);
+
+        HttpSession session = request.getSession();
+        session.setAttribute(Const.LOGIN_SESSION_KEY, result);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<MemberLoginResponseDto> login(
+            @Valid @RequestBody MemberLoginRequestDto requestDto,
+            HttpServletRequest request
+    ) {
+        MemberLoginResponseDto result = memberService.login(requestDto);
+
+        HttpSession session = request.getSession();
+        session.setAttribute(Const.LOGIN_SESSION_KEY, result);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
 }
