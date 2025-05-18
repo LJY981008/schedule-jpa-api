@@ -1,6 +1,6 @@
 package com.example.schedulejpaapi.entity;
 
-import com.example.schedulejpaapi.dto.member.MemberSignupRequestDto;
+import com.example.schedulejpaapi.dto.member.MemberSignUpRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -36,11 +36,11 @@ public class Member extends TimeStampEntity {
     public Member() {
     }
 
-    public Member(MemberSignupRequestDto requestDto) {
+    public Member(MemberSignUpRequestDto requestDto, String password) {
         this.account = requestDto.getAccount();
-        this.password = requestDto.getPassword();
         this.email = requestDto.getEmail();
         this.name = requestDto.getName();
+        this.password = password;
         this.posts = new ArrayList<>();
     }
 

@@ -1,5 +1,6 @@
 package com.example.schedulejpaapi.service;
 
+import com.example.schedulejpaapi.config.PasswordEncoder;
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
@@ -20,20 +21,23 @@ import java.util.stream.Collectors;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 회원 가입
     @Transactional
-    public MemberSignUpResponseDto signUp(MemberSignupRequestDto requestDto, HttpServletRequest servletRequest) {
+    public MemberSignUpResponseDto signUp(MemberSignUpRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember = findMemberByAccountOrEmail(requestDto.getAccount(), requestDto.getEmail());
         if (findMember.isPresent()) {
             throw new AlreadyAccountException("Already Request");
         }
 
-        Member member = new Member(requestDto);
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        Member member = new Member(requestDto, encodedPassword);
         Member savedMember = memberRepository.save(member);
         setLoginSession(servletRequest, savedMember);
 
@@ -46,7 +50,8 @@ public class MemberService {
         Optional<Member> findMember = findMemberByAccountOrEmail(requestDto.getAccount(), requestDto.getEmail());
         Member loggedInMember = getExistingMember(findMember);
 
-        if (!loggedInMember.getPassword().equals(requestDto.getPassword())) {
+        boolean pwMatch = passwordEncoder.matches(requestDto.getPassword(), loggedInMember.getPassword());
+        if (!pwMatch) {
             throw new IncorrectPasswordException("incorrect password");
         }
 
@@ -75,6 +80,10 @@ public class MemberService {
                 .collect(Collectors.toSet());
         if (!invalidFields.isEmpty()) {
             throw new InvalidFieldException("Invalid Field");
+        }
+
+        if(requestUpdateMap.containsKey("password")){
+            requestUpdateMap.put("password", passwordEncoder.encode(requestUpdateMap.get("password")));
         }
 
         requestUpdateMap.forEach((field, value)
