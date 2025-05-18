@@ -2,6 +2,8 @@ package com.example.schedulejpaapi.dto.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
@@ -13,8 +15,10 @@ public class MemberSignupRequestDto {
     private String password;
 
     @NotBlank(message = "userName is empty")
+    @Size(min = 1, max = 4)
     private String name;
 
-    @Email(message = "incorrect format of email")
+    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$",
+            message = "incorrect format of email")
     private String email;
 }

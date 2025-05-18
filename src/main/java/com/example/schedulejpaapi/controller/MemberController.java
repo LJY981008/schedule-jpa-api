@@ -43,7 +43,7 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
-
+    // 회원 정보 변경
     @PatchMapping("/change")
     public ResponseEntity<MemberUpdateResponseDto> updateMember(
             @Valid @RequestBody MemberUpdateRequestDto requestDto,
@@ -55,16 +55,17 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
     }
 
+    // 로그아웃
     @GetMapping("/logout")
     public ResponseEntity<MemberLogoutResponseDto> logout(HttpServletRequest request) {
         MemberLogoutResponseDto logoutMember = memberService.logout(request);
         return ResponseEntity.status(HttpStatus.OK).body(logoutMember);
     }
 
+    // 회원 탈퇴
     @DeleteMapping("/remove")
     public ResponseEntity<MemberRemoveResponseDto> removeMember(HttpServletRequest request) {
         MemberRemoveResponseDto removeMember = memberService.removeMember(request);
         return ResponseEntity.status(HttpStatus.OK).body(removeMember);
     }
-
 }
