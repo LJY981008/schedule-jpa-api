@@ -5,6 +5,7 @@ import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
 import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
+import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -49,7 +50,7 @@ public class MemberService {
         Member loginMember = validateMember(findMember);
 
         if(!loginMember.getPassword().equals(requestDto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            throw new UnauthorizedException("Unauthorized");
         }
 
         setAttributeLoginSession(servletRequest, loginMember);

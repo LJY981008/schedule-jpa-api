@@ -3,6 +3,7 @@ package com.example.schedulejpaapi.exceptions;
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
 import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
 import com.example.schedulejpaapi.exceptions.custom.SessionException;
+import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAlreadyAccountException(AlreadyAccountException ex) {
         String message = ex.getMessage();
         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(message);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException ex) {
+        String message = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 
 }
