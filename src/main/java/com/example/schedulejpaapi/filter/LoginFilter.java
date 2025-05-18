@@ -17,7 +17,7 @@ import java.util.Optional;
 public class LoginFilter implements Filter {
 
     private static final String[] NEED_LOGOUT_LIST = {"/member/signup", "/member/login"};
-    private static final String[] NEED_LOGIN_LIST = {"/member/logout", "/member/update", "/member/remove"};
+    private static final String[] NEED_LOGIN_LIST = {"/member/logout", "/member/update", "/member/remove", "/post/create"};
     private static final String[] POSSIBLE_LIST = {"/"};
     @Override
     public void doFilter(
@@ -34,19 +34,19 @@ public class LoginFilter implements Filter {
         try {
             if (isNeedLogin(requestURI)) {
                 if (session.isEmpty()) {
-                    throw new SessionException("Not Login");
+                    throw new SessionException("Unauthorized");
                 }
             } else if (isNeedLogout(requestURI)) {
                 if (session.isPresent()) {
                     throw new SessionException("Already Logout");
                 }
             } else if (session.isEmpty()) {
-                throw new SessionException("Not Login");
+                throw new SessionException("Unauthorized");
             }
 
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (SessionException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.setCharacterEncoding("UTF-8");
 
