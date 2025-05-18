@@ -4,6 +4,7 @@ import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
+import com.example.schedulejpaapi.exceptions.custom.IncorrectPasswordException;
 import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
 import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.repository.MemberRepository;
@@ -50,7 +51,7 @@ public class MemberService {
         Member loginMember = validateMember(findMember);
 
         if(!loginMember.getPassword().equals(requestDto.getPassword())) {
-            throw new UnauthorizedException("Unauthorized");
+            throw new IncorrectPasswordException("incorrect password");
         }
 
         setAttributeLoginSession(servletRequest, loginMember);
@@ -95,7 +96,7 @@ public class MemberService {
 
     // 회원 조회 검증
     private <T> T validateMember(Optional<T> member) {
-        return member.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found account"));
+        return member.orElseThrow(()-> new UnauthorizedException("Unauthorized"));
     }
 
     // 쿠키+세션 추가

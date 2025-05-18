@@ -1,9 +1,6 @@
 package com.example.schedulejpaapi.exceptions;
 
-import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
-import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
-import com.example.schedulejpaapi.exceptions.custom.SessionException;
-import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
+import com.example.schedulejpaapi.exceptions.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,6 +32,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException ex) {
+        String message = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ResponseEntity<String> handleIncorrectPasswordException(IncorrectPasswordException ex) {
         String message = ex.getMessage();
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
