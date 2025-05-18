@@ -1,18 +1,19 @@
 package com.example.schedulejpaapi.service;
 
-import com.example.schedulejpaapi.dto.MemberLoginRequestDto;
-import com.example.schedulejpaapi.dto.MemberLoginResponseDto;
-import com.example.schedulejpaapi.dto.MemberSignupRequestDto;
-import com.example.schedulejpaapi.dto.MemberSignupResponseDto;
+import com.example.schedulejpaapi.constant.Const;
+import com.example.schedulejpaapi.dto.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
+import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
 import com.example.schedulejpaapi.repository.MemberRepository;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberService {
@@ -23,7 +24,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public MemberSignupResponseDto signup(MemberSignupRequestDto requestDto) {
+    public MemberSignupResponseDto signup(MemberSignupRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember =  memberRepository.findByAccount(requestDto.getAccount());
         if(findMember.isPresent()) {
             throw new AlreadyAccountException("Already Request");
@@ -31,20 +32,49 @@ public class MemberService {
 
         Member member = new Member(requestDto);
         Member saveMember = memberRepository.save(member);
+        setAttributeLoginSession(servletRequest, saveMember);
+
         return new MemberSignupResponseDto(saveMember);
     }
 
-    public MemberLoginResponseDto login(MemberLoginRequestDto requestDto) {
+    public MemberLoginResponseDto login(MemberLoginRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember =  memberRepository.findByAccount(requestDto.getAccount());
-        if(findMember.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found account");
-        }
+        Member loginMember = validateMember(findMember);
 
-        Member loginMember = findMember.get();
         if(!loginMember.getPassword().equals(requestDto.getPassword())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
 
+        setAttributeLoginSession(servletRequest, loginMember);
+
         return new MemberLoginResponseDto(loginMember);
+    }
+
+    public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Optional<Member> loginMember) {
+        Map<String, String> requestMap = requestDto.getUpdateMap();
+        Member connectedMember = validateMember(loginMember);
+
+        Set<String> allowedFields = Const.UPDATE_FIELDS.keySet();
+        Set<String> requestFields = requestMap.keySet();
+        Set<String> invalidFields = requestFields.stream()
+                .filter(field -> !allowedFields.contains(field))
+                .collect(Collectors.toSet());
+        if(!invalidFields.isEmpty()){
+            throw new InvalidFieldException("Invalid Field");
+        }
+
+        requestMap.forEach((field, value) -> Const.UPDATE_FIELDS.get(field).accept(connectedMember, value));
+
+        Member saveMember = memberRepository.save(connectedMember);
+        return new MemberUpdateResponseDto(saveMember);
+    }
+
+    private <T> T validateMember(Optional<T> member) {
+        return member.orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not Found account"));
+    }
+
+    private void setAttributeLoginSession(HttpServletRequest servletRequest, Member member) {
+        HttpSession session = servletRequest.getSession();
+        session.setAttribute(Const.LOGIN_SESSION_KEY, member);
     }
 }

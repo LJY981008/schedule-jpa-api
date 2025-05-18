@@ -1,6 +1,7 @@
 package com.example.schedulejpaapi.exceptions;
 
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
+import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
 import com.example.schedulejpaapi.exceptions.custom.SessionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldError().getDefaultMessage();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    }
+
+    @ExceptionHandler(InvalidFieldException.class)
+    public ResponseEntity<String> handleInvalidFieldException(InvalidFieldException ex) {
+        String message = ex.getMessage();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
     }
 

@@ -31,6 +31,7 @@ public class Member extends TimeStampEntity {
     @OneToMany(mappedBy = "member")
     private List<Post> post;
 
+
     public Member() {
     }
 
@@ -39,5 +40,12 @@ public class Member extends TimeStampEntity {
         this.password = requestDto.getPassword();
         this.email = requestDto.getEmail();
         this.name = requestDto.getName();
+    }
+
+    public void updateName(String value){
+        this.name = value;
+    }
+    public void updatePassword(String value){
+        this.password = value;
     }
 }
