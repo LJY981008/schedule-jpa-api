@@ -1,8 +1,6 @@
 package com.example.schedulejpaapi.controller;
 
-import com.example.schedulejpaapi.dto.post.PostCreateRequestDto;
-import com.example.schedulejpaapi.dto.post.PostCreateResponseDto;
-import com.example.schedulejpaapi.dto.post.PostFindResponseDto;
+import com.example.schedulejpaapi.dto.post.*;
 import com.example.schedulejpaapi.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -41,5 +39,24 @@ public class PostController {
     public ResponseEntity<List<PostFindResponseDto>> getPosts(){
         List<PostFindResponseDto> posts = postService.getPosts();
         return ResponseEntity.status(HttpStatus.OK).body(posts);
+    }
+
+    @PatchMapping("/change")
+    public ResponseEntity<PostUpdateResponseDto> updateMember(
+            @RequestParam Long postId,
+            @Valid @RequestBody PostUpdateRequestDto requestDto,
+            HttpServletRequest request
+    ){
+        PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, request);
+        return ResponseEntity.status(HttpStatus.OK).body(postUpdateResponseDto);
+    }
+
+    @DeleteMapping("/remove")
+    public ResponseEntity<PostRemoveResponseDto> removeMember(
+            @RequestParam Long postId,
+            HttpServletRequest request
+    ){
+        PostRemoveResponseDto postRemoveResponseDto = postService.removePost(postId, request);
+        return ResponseEntity.status(HttpStatus.OK).body(postRemoveResponseDto);
     }
 }

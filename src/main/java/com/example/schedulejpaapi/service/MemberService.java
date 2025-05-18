@@ -63,7 +63,7 @@ public class MemberService {
         Map<String, String> requestMap = requestDto.getUpdateMap();
         Member connectedMember = validateMember(loginMember);
 
-        Set<String> allowedFields = Const.UPDATE_FIELDS.keySet();
+        Set<String> allowedFields = Const.UPDATE_MEMBER_FIELDS.keySet();
         Set<String> requestFields = requestMap.keySet();
         Set<String> invalidFields = requestFields.stream()
                 .filter(field -> !allowedFields.contains(field))
@@ -72,7 +72,7 @@ public class MemberService {
             throw new InvalidFieldException("Invalid Field");
         }
 
-        requestMap.forEach((field, value) -> Const.UPDATE_FIELDS.get(field).accept(connectedMember, value));
+        requestMap.forEach((field, value) -> Const.UPDATE_MEMBER_FIELDS.get(field).accept(connectedMember, value));
 
         Member saveMember = memberRepository.save(connectedMember);
         return new MemberUpdateResponseDto(saveMember);
