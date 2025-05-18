@@ -3,6 +3,7 @@ package com.example.schedulejpaapi.dto.post;
 import com.example.schedulejpaapi.entity.Post;
 import lombok.Getter;
 
+// 스케줄 수정 응답
 @Getter
 public class PostUpdateResponseDto {
     private Long postId;

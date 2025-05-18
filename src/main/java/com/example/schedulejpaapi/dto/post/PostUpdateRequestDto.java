@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.util.Map;
 
+// 스케줄 수정 요청
 @Getter
 public class PostUpdateRequestDto {
 

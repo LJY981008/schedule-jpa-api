@@ -3,6 +3,7 @@ package com.example.schedulejpaapi.dto.member;
 import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;
 
+// 로그인 응답
 @Getter
 public class MemberSignInResponseDto {
     private Long memberId;

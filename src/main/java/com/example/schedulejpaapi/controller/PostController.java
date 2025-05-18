@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// 스케줄 컨트롤러
 @RestController
 @RequestMapping("/post")
 public class PostController {

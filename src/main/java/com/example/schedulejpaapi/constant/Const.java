@@ -6,6 +6,7 @@ import com.example.schedulejpaapi.entity.Post;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+// 상수 정의
 public class Const {
 
     public static final String LOGIN_SESSION_KEY = "MyAPILoginKey";

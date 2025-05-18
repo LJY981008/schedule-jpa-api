@@ -4,6 +4,7 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+// 로그인 요청
 @Getter
 public class MemberLoginRequestDto {
     private String account;

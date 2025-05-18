@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+// 스케줄 엔티티
 @Entity
 @Getter
 @Table(name = "post")

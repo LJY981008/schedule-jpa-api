@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+// 회원 컨트롤러
 @RestController
 @RequestMapping("/member")
 public class MemberController {

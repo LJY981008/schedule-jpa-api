@@ -3,6 +3,7 @@ package com.example.schedulejpaapi.dto.post;
 import com.example.schedulejpaapi.entity.Post;
 import lombok.Getter;
 
+// 스케줄 탐색 응답
 @Getter
 public class PostFindResponseDto {
     private Long postId;

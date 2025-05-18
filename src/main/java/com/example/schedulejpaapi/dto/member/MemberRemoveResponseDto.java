@@ -3,6 +3,7 @@ package com.example.schedulejpaapi.dto.member;
 import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;
 
+// 회원 탈퇴 응답
 @Getter
 public class MemberRemoveResponseDto {
     private Long memberId;

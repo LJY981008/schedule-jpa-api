@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+// 회원가입 요청
 @Getter
 public class MemberSignUpRequestDto {
     @NotBlank(message = "account is empty")

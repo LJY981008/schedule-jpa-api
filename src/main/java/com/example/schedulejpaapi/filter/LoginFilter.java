@@ -59,9 +59,12 @@ public class LoginFilter implements Filter {
         }
     }
 
+    // 로그인이 필요한 URI
     private boolean isNeedLogin(String requestURI) {
         return PatternMatchUtils.simpleMatch(NEED_LOGIN_LIST, requestURI);
     }
+
+    // 로그아웃이 필요한 URI
     private boolean isNeedLogout(String requestURI) {
         return PatternMatchUtils.simpleMatch(NEED_LOGOUT_LIST, requestURI);
     }
