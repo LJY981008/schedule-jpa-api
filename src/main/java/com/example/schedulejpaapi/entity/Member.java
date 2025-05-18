@@ -2,6 +2,10 @@ package com.example.schedulejpaapi.entity;
 
 import com.example.schedulejpaapi.dto.MemberSignupRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.List;
@@ -17,15 +21,22 @@ public class Member extends TimeStampEntity {
     private Long id;
 
     @Column(name = "account", nullable = false, unique = true)
+    @NotBlank(message = "account is empty")
     private String account;
 
     @Column(name = "password", nullable = false)
+    @NotBlank(message = "password is empty")
     private String password;
 
     @Column(name = "email", nullable = false, unique = true)
+    @NotBlank(message = "email is empty")
+    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$",
+            message = "incorrect format of email")
     private String email;
 
     @Column(name = "name", nullable = false)
+    @Size(min = 1, max = 4)
+    @NotBlank(message = "name is empty")
     private String name;
 
     @OneToMany(mappedBy = "member")

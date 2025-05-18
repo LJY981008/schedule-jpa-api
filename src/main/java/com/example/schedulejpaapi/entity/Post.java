@@ -2,6 +2,8 @@ package com.example.schedulejpaapi.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Entity
@@ -15,9 +17,12 @@ public class Post extends TimeStampEntity {
     private Long id;
 
     @Column(name = "title", nullable = false)
+    @Size(min = 1, max = 10)
+    @NotBlank(message = "title is empty")
     private String title;
 
     @Column(name = "contents", nullable = false, columnDefinition = "TEXT")
+    @NotBlank(message = "contents is empty")
     private String contents;
 
     @ManyToOne
