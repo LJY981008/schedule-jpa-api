@@ -1,11 +1,10 @@
 package com.example.schedulejpaapi.controller;
 
 import com.example.schedulejpaapi.constant.Const;
-import com.example.schedulejpaapi.dto.*;
+import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

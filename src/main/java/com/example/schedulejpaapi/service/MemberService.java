@@ -1,7 +1,7 @@
 package com.example.schedulejpaapi.service;
 
 import com.example.schedulejpaapi.constant.Const;
-import com.example.schedulejpaapi.dto.*;
+import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
 import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
@@ -40,6 +40,7 @@ public class MemberService {
 
     public MemberLoginResponseDto login(MemberLoginRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember =  memberRepository.findByAccount(requestDto.getAccount());
+        if(findMember.isEmpty()) findMember = memberRepository.findByEmail(requestDto.getEmail());
         Member loginMember = validateMember(findMember);
 
         if(!loginMember.getPassword().equals(requestDto.getPassword())) {

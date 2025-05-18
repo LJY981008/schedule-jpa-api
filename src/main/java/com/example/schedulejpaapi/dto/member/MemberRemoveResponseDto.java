@@ -1,15 +1,15 @@
-package com.example.schedulejpaapi.dto;
+package com.example.schedulejpaapi.dto.member;
 
 import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;
 
 @Getter
-public class MemberLoginResponseDto {
+public class MemberRemoveResponseDto {
     private Long memberId;
     private String account;
     private String name;
 
-    public MemberLoginResponseDto(Member member) {
+    public MemberRemoveResponseDto(Member member) {
         this.memberId = member.getId();
         this.account = member.getAccount();
         this.name = member.getName();

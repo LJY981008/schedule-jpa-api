@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.dto;
+package com.example.schedulejpaapi.dto.member;
 
 import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;

@@ -1,8 +1,7 @@
 package com.example.schedulejpaapi.entity;
 
-import com.example.schedulejpaapi.dto.MemberSignupRequestDto;
+import com.example.schedulejpaapi.dto.member.MemberSignupRequestDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

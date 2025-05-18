@@ -1,18 +1,22 @@
-package com.example.schedulejpaapi.dto;
+package com.example.schedulejpaapi.dto.member;
 
 import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;
 
 @Getter
-public class MemberUpdateResponseDto {
+public class MemberSignupResponseDto {
+    private Long memberId;
     private String account;
     private String name;
+    private String email;
     private String createdAt;
     private String modifiedAt;
 
-    public MemberUpdateResponseDto(Member member) {
+    public MemberSignupResponseDto(Member member) {
+        this.memberId = member.getId();
         this.account = member.getAccount();
         this.name = member.getName();
+        this.email = member.getEmail();
         this.createdAt = member.getCreatedAt().toString();
         this.modifiedAt = member.getModifiedAt().toString();
     }
