@@ -56,5 +56,10 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<MemberLogoutResponseDto> logout(HttpServletRequest request) {
+        MemberLogoutResponseDto logoutMember = memberService.logout(request);
+        return ResponseEntity.status(HttpStatus.OK).body(logoutMember);
+    }
 
 }

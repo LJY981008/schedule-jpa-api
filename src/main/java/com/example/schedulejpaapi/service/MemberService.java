@@ -26,7 +26,8 @@ public class MemberService {
 
     public MemberSignupResponseDto signup(MemberSignupRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember =  memberRepository.findByAccount(requestDto.getAccount());
-        if(findMember.isPresent()) {
+        Optional<Member> findEmail =  memberRepository.findByEmail(requestDto.getEmail());
+        if(findMember.isPresent() || findEmail.isPresent()) {
             throw new AlreadyAccountException("Already Request");
         }
 
@@ -67,6 +68,13 @@ public class MemberService {
 
         Member saveMember = memberRepository.save(connectedMember);
         return new MemberUpdateResponseDto(saveMember);
+    }
+
+    public MemberLogoutResponseDto logout(HttpServletRequest servletRequest) {
+        HttpSession session = servletRequest.getSession();
+        Member member = (Member) session.getAttribute(Const.LOGIN_SESSION_KEY);
+        session.invalidate();
+        return new MemberLogoutResponseDto(member);
     }
 
     private <T> T validateMember(Optional<T> member) {
