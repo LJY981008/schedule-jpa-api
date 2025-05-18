@@ -62,4 +62,10 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(logoutMember);
     }
 
+    @DeleteMapping("/remove")
+    public ResponseEntity<MemberRemoveResponseDto> removeMember(HttpServletRequest request) {
+        MemberRemoveResponseDto removeMember = memberService.removeMember(request);
+        return ResponseEntity.status(HttpStatus.OK).body(removeMember);
+    }
+
 }

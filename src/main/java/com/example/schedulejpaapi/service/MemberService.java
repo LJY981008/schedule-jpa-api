@@ -71,10 +71,14 @@ public class MemberService {
     }
 
     public MemberLogoutResponseDto logout(HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-        Member member = (Member) session.getAttribute(Const.LOGIN_SESSION_KEY);
-        session.invalidate();
+        Member member = setAttributeLogoutSession(servletRequest);
         return new MemberLogoutResponseDto(member);
+    }
+
+    public MemberRemoveResponseDto removeMember(HttpServletRequest servletRequest) {
+        Member member = setAttributeLogoutSession(servletRequest);
+        memberRepository.delete(member);
+        return new MemberRemoveResponseDto(member);
     }
 
     private <T> T validateMember(Optional<T> member) {
@@ -84,5 +88,13 @@ public class MemberService {
     private void setAttributeLoginSession(HttpServletRequest servletRequest, Member member) {
         HttpSession session = servletRequest.getSession();
         session.setAttribute(Const.LOGIN_SESSION_KEY, member);
+    }
+
+    private Member setAttributeLogoutSession(HttpServletRequest servletRequest) {
+        HttpSession session = servletRequest.getSession();
+        Member member = (Member) session.getAttribute(Const.LOGIN_SESSION_KEY);
+        session.invalidate();
+
+        return member;
     }
 }
