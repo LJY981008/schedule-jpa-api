@@ -18,7 +18,7 @@ public class LoginFilter implements Filter {
 
     private static final String[] NEED_LOGOUT_LIST = {"/member/signup", "/member/login"};
     private static final String[] NEED_LOGIN_LIST = {"/member/logout", "/member/update", "/member/remove", "/post/create"};
-    private static final String[] POSSIBLE_LIST = {"/"};
+    private static final String[] POSSIBLE_LIST = {"/", "/post"};
     @Override
     public void doFilter(
             ServletRequest servletRequest,

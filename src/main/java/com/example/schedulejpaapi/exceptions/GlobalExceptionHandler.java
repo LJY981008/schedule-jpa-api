@@ -42,4 +42,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
     }
 
+    @ExceptionHandler(NotFoundPostException.class)
+    public ResponseEntity<String> handleNotFoundPostException(NotFoundPostException ex) {
+        String message = ex.getMessage();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+    }
 }

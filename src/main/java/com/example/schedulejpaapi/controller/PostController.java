@@ -2,14 +2,15 @@ package com.example.schedulejpaapi.controller;
 
 import com.example.schedulejpaapi.dto.post.PostCreateRequestDto;
 import com.example.schedulejpaapi.dto.post.PostCreateResponseDto;
+import com.example.schedulejpaapi.dto.post.PostFindResponseDto;
 import com.example.schedulejpaapi.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/post")
@@ -27,6 +28,18 @@ public class PostController {
             HttpServletRequest servletRequest
     ){
         PostCreateResponseDto post = postService.createPost(requestDto, servletRequest);
-        return ResponseEntity.ok().body(post);
+        return ResponseEntity.status(HttpStatus.CREATED).body(post);
+    }
+
+    @GetMapping("/find")
+    public ResponseEntity<PostFindResponseDto> getPostById(@RequestParam Long postId){
+        PostFindResponseDto post = postService.getPostById(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<PostFindResponseDto>> getPosts(){
+        List<PostFindResponseDto> posts = postService.getPosts();
+        return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 }
