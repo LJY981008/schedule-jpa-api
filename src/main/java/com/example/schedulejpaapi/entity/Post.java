@@ -2,7 +2,6 @@ package com.example.schedulejpaapi.entity;
 
 
 import com.example.schedulejpaapi.dto.post.PostCreateRequestDto;
-import com.example.schedulejpaapi.dto.post.PostUpdateRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -38,7 +37,7 @@ public class Post extends TimeStampEntity {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.member = member;
-        member.getPost().add(this);
+        member.getPosts().add(this);
     }
 
     public void updateTitle(String value) {

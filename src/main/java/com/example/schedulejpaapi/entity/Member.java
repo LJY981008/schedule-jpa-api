@@ -2,9 +2,6 @@ package com.example.schedulejpaapi.entity;
 
 import com.example.schedulejpaapi.dto.member.MemberSignupRequestDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -33,7 +30,7 @@ public class Member extends TimeStampEntity {
     private String name;
 
     @OneToMany(mappedBy = "member")
-    private List<Post> post;
+    private List<Post> posts;
 
 
     public Member() {
@@ -44,13 +41,14 @@ public class Member extends TimeStampEntity {
         this.password = requestDto.getPassword();
         this.email = requestDto.getEmail();
         this.name = requestDto.getName();
-        this.post = new ArrayList<>();
+        this.posts = new ArrayList<>();
     }
 
-    public void updateName(String value){
+    public void updateName(String value) {
         this.name = value;
     }
-    public void updatePassword(String value){
+
+    public void updatePassword(String value) {
         this.password = value;
     }
 }

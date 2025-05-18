@@ -24,35 +24,24 @@ public class MemberController {
 
     // 회원 가입
     @PostMapping("/signup")
-    public ResponseEntity<MemberSignupResponseDto> signup(
+    public ResponseEntity<MemberSignUpResponseDto> signup(
             @Valid @RequestBody MemberSignupRequestDto requestDto,
             HttpServletRequest servletRequest
     ) {
-        MemberSignupResponseDto result = memberService.signup(requestDto, servletRequest);
+        MemberSignUpResponseDto result = memberService.signUp(requestDto, servletRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     // 로그인
     @GetMapping("/login")
-    public ResponseEntity<MemberLoginResponseDto> login(
+    public ResponseEntity<MemberSignInResponseDto> login(
             @Valid @RequestBody MemberLoginRequestDto requestDto,
             HttpServletRequest servletRequest
     ) {
-        MemberLoginResponseDto result = memberService.login(requestDto, servletRequest);
+        MemberSignInResponseDto result = memberService.login(requestDto, servletRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
-    }
-    // 회원 정보 변경
-    @PatchMapping("/change")
-    public ResponseEntity<MemberUpdateResponseDto> updateMember(
-            @Valid @RequestBody MemberUpdateRequestDto requestDto,
-            HttpServletRequest request
-    ){
-        Optional<Member> loginMember = Optional.ofNullable((Member) request.getSession().getAttribute(Const.LOGIN_SESSION_KEY));
-        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, loginMember);
-
-        return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
     }
 
     // 로그아웃
@@ -60,6 +49,18 @@ public class MemberController {
     public ResponseEntity<MemberLogoutResponseDto> logout(HttpServletRequest request) {
         MemberLogoutResponseDto logoutMember = memberService.logout(request);
         return ResponseEntity.status(HttpStatus.OK).body(logoutMember);
+    }
+
+    // 회원 정보 변경
+    @PatchMapping("/change")
+    public ResponseEntity<MemberUpdateResponseDto> updateMember(
+            @Valid @RequestBody MemberUpdateRequestDto requestDto,
+            HttpServletRequest request
+    ) {
+        Optional<Member> loginMember = Optional.ofNullable((Member) request.getSession().getAttribute(Const.LOGIN_SESSION_KEY));
+        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, loginMember);
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
     }
 
     // 회원 탈퇴

@@ -17,14 +17,20 @@ import java.util.Optional;
 public class LoginFilter implements Filter {
 
     private static final String[] NEED_LOGOUT_LIST = {"/member/signup", "/member/login"};
-    private static final String[] NEED_LOGIN_LIST = {"/member/logout", "/member/update", "/member/remove", "/post/create"};
-    private static final String[] POSSIBLE_LIST = {"/", "/post"};
+    private static final String[] NEED_LOGIN_LIST = {
+            "/member/logout", "/member/update",
+            "/member/remove", "/post/create",
+            "/post/change", "/post/remove"
+    };
+    private static final String[] POSSIBLE_LIST = {"/", "/post/all", "/post/find"};
+
     @Override
     public void doFilter(
             ServletRequest servletRequest,
             ServletResponse servletResponse,
             FilterChain filterChain
     ) throws IOException, ServletException {
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String requestURI = request.getRequestURI();
@@ -40,10 +46,7 @@ public class LoginFilter implements Filter {
                 if (session.isPresent()) {
                     throw new SessionException("Already Logout");
                 }
-            } else if (session.isEmpty()) {
-                throw new SessionException("Unauthorized");
             }
-
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (SessionException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -59,9 +62,7 @@ public class LoginFilter implements Filter {
     private boolean isNeedLogin(String requestURI) {
         return PatternMatchUtils.simpleMatch(NEED_LOGIN_LIST, requestURI);
     }
-    private boolean isPossible(String requestURI) {
-        return PatternMatchUtils.simpleMatch(POSSIBLE_LIST, requestURI);
-    }
+
     private boolean isNeedLogout(String requestURI) {
         return PatternMatchUtils.simpleMatch(NEED_LOGOUT_LIST, requestURI);
     }

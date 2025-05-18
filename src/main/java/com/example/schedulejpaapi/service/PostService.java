@@ -10,7 +10,6 @@ import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,87 +32,97 @@ public class PostService {
     @Transactional
     public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession();
-        Optional<Member> writer = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if(writer.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        Member verifiedWriter = writer.get();
+        Member writer = getLoggedInMember(session);;
 
-        Post post = new Post(requestDto, verifiedWriter);
-        Post savePost = postRepository.save(post);
-        return new PostCreateResponseDto(savePost);
+        Post postSetWriter = new Post(requestDto, writer);
+        Post savedPost = postRepository.save(postSetWriter);
+        return new PostCreateResponseDto(savedPost);
     }
 
+    // 스케줄 단건조회
+    @Transactional(readOnly = true)
     public PostFindResponseDto getPostById(Long postId) {
-        Optional<Post> post = postRepository.findById(postId);
-        if(post.isEmpty()) throw new NotFoundPostException("NotFound Post");
-        Post findPost = post.get();
+        Post findPost = getExistingPost(postId);
         return new PostFindResponseDto(findPost);
     }
 
+    // 스케줄 전체조회
+    @Transactional(readOnly = true)
     public List<PostFindResponseDto> getPosts() {
-        List<Post> posts = postRepository.findAll();
-        if(posts.isEmpty()) throw new NotFoundPostException("NotFound Post");
-        return posts.stream()
-                .map(PostFindResponseDto::new)
-                .toList();
+        List<Post> findPosts = postRepository.findAll();
+        if (findPosts.isEmpty()) throw new NotFoundPostException("NotFound Post");
+        return findPosts.stream().map(PostFindResponseDto::new).toList();
     }
 
-    public PostUpdateResponseDto updatePost(
-            Long postId,
-            PostUpdateRequestDto requestDto,
-            HttpServletRequest request
-    ) {
+    // 스케줄 수정
+    @Transactional
+    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto, HttpServletRequest request) {
+        Post findPost = verifyPostAccess(postId, request);
+        // 수정 요청 필드 검증
+        Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
+        verifyUpdatableField(requestUpdateMap);
+
+        requestUpdateMap.forEach((field, value)
+                -> Const.UPDATE_POST_FIELDS.get(field).accept(findPost, value));
+        Post savedPost = postRepository.save(findPost);
+
+        return new PostUpdateResponseDto(savedPost);
+    }
+
+    // 스케줄 삭제
+    @Transactional
+    public PostRemoveResponseDto removePost(Long postId, HttpServletRequest request) {
+        Post findPost = verifyPostAccess(postId, request);
+
+        findPost.getMember().getPosts().remove(findPost);
+        postRepository.delete(findPost);
+
+        return new PostRemoveResponseDto(findPost);
+    }
+
+    // 로그인 검증, 게시글 탐색 후 검증, 작성자 일치 검증
+    private Post verifyPostAccess(Long postId, HttpServletRequest request) {
         HttpSession session = request.getSession();
-        Optional<Member> loginMemberResult = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if(loginMemberResult.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        Optional<Post> currentPostResult = postRepository.findById(postId);
-        if(currentPostResult.isEmpty()) throw new NotFoundPostException("NotFound Post");
+        Member loggedInMember = getLoggedInMember(session);
+        Post findPost = getExistingPost(postId);
+        verifyPostAuthor(findPost, loggedInMember);
 
-        Map<String, String> requestMap = requestDto.getUpdateMap();
+        return findPost;
+    }
 
+    // 현재 로그인 멤버 검증
+    private Member getLoggedInMember(HttpSession session) {
+        Optional<Member> loggedInMember
+                = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
+        if (loggedInMember.isEmpty()) throw new UnauthorizedException("Unauthorized");
+        return loggedInMember.get();
+    }
+
+    // 스케줄 탐색 후 검증
+    private Post getExistingPost(Long postId) {
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) throw new NotFoundPostException("NotFound Post");
+        return findPost.get();
+    }
+
+    // 작성자 일치 검증
+    private void verifyPostAuthor(Post post, Member loggedInMember) {
+        Long loggedInMemberId = loggedInMember.getId();
+        Long postWriterId = post.getMember().getId();
+        if (!loggedInMemberId.equals(postWriterId)) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+    }
+
+    // 수정 요청 필드 검증
+    private void verifyUpdatableField(Map<String, String> requestMap){
         Set<String> allowedFields = Const.UPDATE_POST_FIELDS.keySet();
         Set<String> requestFields = requestMap.keySet();
         Set<String> invalidFields = requestFields.stream()
                 .filter(field -> !allowedFields.contains(field))
                 .collect(Collectors.toSet());
-        if(!invalidFields.isEmpty()){
+        if (!invalidFields.isEmpty()) {
             throw new InvalidFieldException("Invalid Field");
         }
-
-        Member loginMemberEntity = loginMemberResult.get();
-        Post currentPostEntity = currentPostResult.get();
-
-        Long loginMemberId = loginMemberEntity.getId();
-        Long currentPostWriterId = currentPostEntity.getMember().getId();
-
-        if(!loginMemberId.equals(currentPostWriterId)) {
-            throw new UnauthorizedException("Unauthorized");
-        }
-
-        requestMap.forEach((field, value) -> Const.UPDATE_POST_FIELDS.get(field).accept(currentPostEntity, value));
-        Post savePost = postRepository.save(currentPostEntity);
-
-        return new PostUpdateResponseDto(savePost);
-    }
-
-    public PostRemoveResponseDto removePost(Long postId, HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        Optional<Member> loginMemberResult = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if(loginMemberResult.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        Optional<Post> currentPostResult = postRepository.findById(postId);
-        if(currentPostResult.isEmpty()) throw new NotFoundPostException("NotFound Post");
-
-        Member loginMemberEntity = loginMemberResult.get();
-        Post currentPostEntity = currentPostResult.get();
-
-        Long loginMemberId = loginMemberEntity.getId();
-        Long currentPostWriterId = currentPostEntity.getMember().getId();
-
-        if(!loginMemberId.equals(currentPostWriterId)) {
-            throw new UnauthorizedException("Unauthorized");
-        }
-
-        postRepository.delete(currentPostEntity);
-        loginMemberEntity.getPost().remove(currentPostEntity);
-        return new PostRemoveResponseDto(currentPostEntity);
     }
 }

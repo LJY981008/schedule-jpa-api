@@ -4,7 +4,7 @@ import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;
 
 @Getter
-public class MemberSignupResponseDto {
+public class MemberSignUpResponseDto {
     private Long memberId;
     private String account;
     private String name;
@@ -12,7 +12,7 @@ public class MemberSignupResponseDto {
     private String createdAt;
     private String modifiedAt;
 
-    public MemberSignupResponseDto(Member member) {
+    public MemberSignUpResponseDto(Member member) {
         this.memberId = member.getId();
         this.account = member.getAccount();
         this.name = member.getName();
