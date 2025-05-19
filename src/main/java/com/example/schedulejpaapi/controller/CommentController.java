@@ -22,7 +22,7 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    // 댓글 생성
+    // 선택한 스케줄에 댓글 생성
     @PostMapping("/create")
     public ResponseEntity<CommentCreateResponseDto> createComment(
             @Valid @RequestBody CommentCreateRequestDto requestDto,
@@ -33,8 +33,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 
-    // 선택한 스케줄의 댓글
-
+    // 선택한 스케줄의 댓글 전체 조회
     @GetMapping
     public ResponseEntity<List<CommentFindByPostResponseDto>> getCommentsByPostId(
             @RequestParam Long postId

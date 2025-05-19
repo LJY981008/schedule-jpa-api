@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 public class CommentCreateRequestDto {
 
-    @NotBlank(message = "contents is empty")
+    @NotBlank(message = "comment is empty")
     private String contents;
 }
