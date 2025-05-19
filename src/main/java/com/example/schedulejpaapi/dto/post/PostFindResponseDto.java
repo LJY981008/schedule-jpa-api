@@ -5,12 +5,14 @@ import com.example.schedulejpaapi.entity.Post;
 import lombok.Getter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-// 스케줄 탐색 응답
+/**
+ * 스케줄 검색 응답 DTO
+ */
 @Getter
 public class PostFindResponseDto {
+
     private Long postId;
     private String title;
     private String contents;

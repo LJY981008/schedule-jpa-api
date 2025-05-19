@@ -3,9 +3,12 @@ package com.example.schedulejpaapi.dto.member;
 import com.example.schedulejpaapi.entity.Member;
 import lombok.Getter;
 
-// 회원가입 응답
+/**
+ * 회원 생성 응답 DTO
+ */
 @Getter
 public class MemberSignUpResponseDto {
+
     private Long memberId;
     private String account;
     private String name;
