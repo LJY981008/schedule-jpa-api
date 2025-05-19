@@ -13,6 +13,7 @@ import com.example.schedulejpaapi.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class CommentService {
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 생성된 댓글 정보 DTO{@link CommentCreateResponseDto}
      */
+    @Transactional
     public CommentCreateResponseDto createComment(
             Long postId,
             CommentCreateRequestDto requestDto,
@@ -62,6 +64,7 @@ public class CommentService {
      * @param postId 조회할 스케줄의 ID
      * @return 조회된 댓글 목록 DTO{@link CommentFindByPostResponseDto} 리스트
      */
+    @Transactional(readOnly = true)
     public List<CommentFindByPostResponseDto> getCommentsByPostId(Long postId) {
         Post selectPost = getPostById(postId);
         List<Comment> comments = commentRepository.findByPost(selectPost);
@@ -77,6 +80,7 @@ public class CommentService {
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
+    @Transactional
     public CommentUpdateResponseDto updateComment(
             Long commentId,
             CommentUpdateRequestDto requestDto,
@@ -109,6 +113,7 @@ public class CommentService {
      * @param commentId 삭제할 댓글 ID
      * @return 삭제된 댓글 정보 DTO{@link CommentRemoveResponseDto}
      */
+    @Transactional
     public CommentRemoveResponseDto removeComment(Long commentId) {
         Comment selectComment = getCommentById(commentId);
         commentRepository.delete(selectComment);

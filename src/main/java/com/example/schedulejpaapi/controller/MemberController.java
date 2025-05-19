@@ -65,6 +65,7 @@ public class MemberController {
     @GetMapping("/logout")
     public ResponseEntity<MemberLogoutResponseDto> logout(HttpServletRequest servletRequest) {
         MemberLogoutResponseDto logoutMember = memberService.logout(servletRequest);
+
         return ResponseEntity.status(HttpStatus.OK).body(logoutMember);
     }
 
@@ -94,6 +95,7 @@ public class MemberController {
     @DeleteMapping("/remove")
     public ResponseEntity<MemberRemoveResponseDto> removeMember(HttpServletRequest servletRequest) {
         MemberRemoveResponseDto removeMember = memberService.removeMember(servletRequest);
+
         return ResponseEntity.status(HttpStatus.OK).body(removeMember);
     }
 }

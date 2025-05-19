@@ -37,6 +37,7 @@ public class PostController {
             HttpServletRequest servletRequest
     ) {
         PostCreateResponseDto post = postService.createPost(requestDto, servletRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
@@ -49,6 +50,7 @@ public class PostController {
     @GetMapping("/find")
     public ResponseEntity<PostFindResponseDto> getPostById(@RequestParam Long postId) {
         PostFindResponseDto post = postService.getPostById(postId);
+
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
@@ -65,6 +67,7 @@ public class PostController {
             @RequestParam(defaultValue = "10") int size
     ) {
         List<PostFindAllResponseDto> posts = postService.getPosts(page, size);
+
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
@@ -83,6 +86,7 @@ public class PostController {
             HttpServletRequest servletRequest
     ) {
         PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, servletRequest);
+
         return ResponseEntity.status(HttpStatus.OK).body(postUpdateResponseDto);
     }
 
@@ -99,6 +103,7 @@ public class PostController {
             HttpServletRequest servletRequest
     ) {
         PostRemoveResponseDto postRemoveResponseDto = postService.removePost(postId, servletRequest);
+
         return ResponseEntity.status(HttpStatus.OK).body(postRemoveResponseDto);
     }
 }

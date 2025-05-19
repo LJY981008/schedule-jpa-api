@@ -39,6 +39,7 @@ public class CommentController {
             HttpServletRequest servletRequest
     ) {
         CommentCreateResponseDto comment = commentService.createComment(postId, requestDto, servletRequest);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 
@@ -51,6 +52,7 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<List<CommentFindByPostResponseDto>> getCommentsByPostId(@RequestParam Long postId) {
         List<CommentFindByPostResponseDto> comments = commentService.getCommentsByPostId(postId);
+
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
 
@@ -69,6 +71,7 @@ public class CommentController {
             HttpServletRequest servletRequest
     ) {
         CommentUpdateResponseDto comment = commentService.updateComment(commentId, requestDto, servletRequest);
+
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 
@@ -81,6 +84,7 @@ public class CommentController {
     @DeleteMapping("/remove")
     public ResponseEntity<CommentRemoveResponseDto> removeComment(@RequestParam Long commentId) {
         CommentRemoveResponseDto comment = commentService.removeComment(commentId);
+
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 }
