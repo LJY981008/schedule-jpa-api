@@ -1,8 +1,6 @@
 package com.example.schedulejpaapi.controller;
 
-import com.example.schedulejpaapi.dto.comment.CommentCreateRequestDto;
-import com.example.schedulejpaapi.dto.comment.CommentCreateResponseDto;
-import com.example.schedulejpaapi.dto.comment.CommentFindByPostResponseDto;
+import com.example.schedulejpaapi.dto.comment.*;
 import com.example.schedulejpaapi.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -40,5 +38,24 @@ public class CommentController {
     ) {
         List<CommentFindByPostResponseDto> comments = commentService.getCommentsByPostId(postId);
         return ResponseEntity.status(HttpStatus.OK).body(comments);
+    }
+
+    // 댓글 수정
+    @PatchMapping("/change")
+    public ResponseEntity<CommentUpdateResponseDto> updateComment(
+            @RequestParam Long commentId,
+            @Valid @RequestBody CommentUpdateRequestDto requestDto,
+            HttpServletRequest request
+    ) {
+        CommentUpdateResponseDto comment = commentService.updateComment(commentId, requestDto, request);
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
+    }
+
+    @DeleteMapping("/remove")
+    public ResponseEntity<CommentRemoveResponseDto> removeComment(
+            @RequestParam Long commentId
+    ) {
+        CommentRemoveResponseDto comment = commentService.removeComment(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 }

@@ -1,12 +1,11 @@
 package com.example.schedulejpaapi.service;
 
 import com.example.schedulejpaapi.constant.Const;
-import com.example.schedulejpaapi.dto.comment.CommentCreateRequestDto;
-import com.example.schedulejpaapi.dto.comment.CommentCreateResponseDto;
-import com.example.schedulejpaapi.dto.comment.CommentFindByPostResponseDto;
+import com.example.schedulejpaapi.dto.comment.*;
 import com.example.schedulejpaapi.entity.Comment;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.entity.Post;
+import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
 import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
 import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.repository.CommentRepository;
@@ -16,7 +15,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -51,6 +53,32 @@ public class CommentService {
                 .toList();
     }
 
+    // 댓글 수정
+    public CommentUpdateResponseDto updateComment(
+            Long commentId,
+            CommentUpdateRequestDto requestDto,
+            HttpServletRequest request
+    ) {
+        Member loggedInMember = getLoggedInMember(request.getSession());
+        Comment selectComment = getCommentById(commentId);
+        verifyCommentAuthor(selectComment, loggedInMember);
+
+        Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
+        verifyUpdatableField(requestUpdateMap);
+
+        requestUpdateMap.forEach((field, value)
+                -> Const.UPDATE_COMMENT_FIELDS.get(field).accept(selectComment, value));
+        Comment savedComment = commentRepository.save(selectComment);
+
+        return new CommentUpdateResponseDto(savedComment);
+    }
+
+    public CommentRemoveResponseDto removeComment(Long commentId) {
+        Comment selectComment = getCommentById(commentId);
+        commentRepository.delete(selectComment);
+        return new CommentRemoveResponseDto(selectComment);
+    }
+
     private Member getLoggedInMember(HttpSession session) {
         Optional<Member> loggedInMember
                 = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
@@ -64,9 +92,34 @@ public class CommentService {
         return selectedPost.get();
     }
 
+    private Comment getCommentById(Long commentId){
+        Optional<Comment> selectedComment = commentRepository.findById(commentId);
+        if(selectedComment.isEmpty()) throw new NotFoundPostException("NotFound Comment");
+        return selectedComment.get();
+    }
+
     private List<Comment> getCommentListByPost(Post post){
         List<Comment> comments = commentRepository.findByPost(post);
         return comments.isEmpty() ? List.of() : comments;
+    }
+    private void verifyCommentAuthor(Comment comment, Member loggedInMember) {
+        Long loggedInMemberId = loggedInMember.getId();
+        Long commentWriterId = comment.getMember().getId();
+        if (!loggedInMemberId.equals(commentWriterId)) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+    }
+
+    // 수정 요청 필드 검증
+    private void verifyUpdatableField(Map<String, String> requestMap){
+        Set<String> allowedFields = Const.UPDATE_COMMENT_FIELDS.keySet();
+        Set<String> requestFields = requestMap.keySet();
+        Set<String> invalidFields = requestFields.stream()
+                .filter(field -> !allowedFields.contains(field))
+                .collect(Collectors.toSet());
+        if (!invalidFields.isEmpty()) {
+            throw new InvalidFieldException("Invalid Field");
+        }
     }
 
 

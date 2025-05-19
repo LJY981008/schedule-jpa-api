@@ -1,5 +1,6 @@
 package com.example.schedulejpaapi.constant;
 
+import com.example.schedulejpaapi.entity.Comment;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.entity.Post;
 
@@ -19,6 +20,10 @@ public class Const {
     public static final Map<String, BiConsumer<Post, String>> UPDATE_POST_FIELDS = Map.of(
             "title", Post::updateTitle,
             "contents", Post::updateContents
+    );
+
+    public static final Map<String, BiConsumer<Comment, String>> UPDATE_COMMENT_FIELDS = Map.of(
+            "contents", Comment::updateContents
     );
 
     private Const() {

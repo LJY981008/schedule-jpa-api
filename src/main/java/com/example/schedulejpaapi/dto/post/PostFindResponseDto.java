@@ -30,6 +30,6 @@ public class PostFindResponseDto {
         this.commentMap = new HashMap<>();
         for (Comment comment : post.getComments()) {
             this.commentMap.put(comment.getId(), comment.getContents());
-        }   
+        }
     }
 }

@@ -50,10 +50,10 @@ public class PostService {
 
     // 스케줄 전체조회
     @Transactional(readOnly = true)
-    public List<PostFindResponseDto> getPosts() {
+    public List<PostFindAllResponseDto> getPosts() {
         List<Post> findPosts = postRepository.findAll();
         if (findPosts.isEmpty()) throw new NotFoundPostException("NotFound Post");
-        return findPosts.stream().map(PostFindResponseDto::new).toList();
+        return findPosts.stream().map(PostFindAllResponseDto::new).toList();
     }
 
     // 스케줄 수정

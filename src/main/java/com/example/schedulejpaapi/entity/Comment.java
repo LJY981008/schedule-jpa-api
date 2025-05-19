@@ -16,12 +16,12 @@ public class Comment extends TimeStampEntity{
     @Column(name = "contents", nullable = false)
     private String contents;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     public Comment() {
@@ -31,8 +31,9 @@ public class Comment extends TimeStampEntity{
         this.contents = requestDto.getContents();
         this.post = post;
         this.member = member;
+    }
 
-        post.getComments().add(this);
-        member.getComments().add(this);
+    public void updateContents(String value) {
+        this.contents = value;
     }
 }
