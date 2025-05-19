@@ -7,11 +7,15 @@ import com.example.schedulejpaapi.entity.Post;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-// 상수 정의
+/**
+ * API에서 사용하는 상수 정의
+ */
 public class Const {
 
-    public static final String LOGIN_SESSION_KEY = "MyAPILoginKey";
-
+    /**
+     * 세션
+     */
+    public static final String LOGIN_SESSION_KEY = "LOGIN_SESSION_KEYJKWQUR#GK@BK!$";
     public static final Map<String, BiConsumer<Member, String>> UPDATE_MEMBER_FIELDS = Map.of(
             "name", Member::updateName,
             "password", Member::updatePassword

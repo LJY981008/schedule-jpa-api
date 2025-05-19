@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
-// 스케줄 생성 요청
+/**
+ * 스케줄 생성 요청 DTO
+ */
 @Getter
 public class PostCreateRequestDto {
 

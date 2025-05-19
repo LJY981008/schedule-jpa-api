@@ -3,15 +3,17 @@ package com.example.schedulejpaapi.dto.post;
 import com.example.schedulejpaapi.entity.Post;
 import lombok.Getter;
 
-// 스케줄 생성 응답
+/**
+ * 스케줄 생성 응답 DTO
+ */
 @Getter
 public class PostCreateResponseDto {
+
     private Long postId;
     private String title;
     private String contents;
     private String createdAt;
     private String modifiedAt;
-
     private Long memberId;
     private String memberName;
 
