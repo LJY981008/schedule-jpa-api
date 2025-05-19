@@ -9,6 +9,9 @@ import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
 import com.example.schedulejpaapi.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,8 +52,12 @@ public class PostService {
 
     // 스케줄 전체조회
     @Transactional(readOnly = true)
-    public List<PostFindAllResponseDto> getPosts() {
-        List<Post> findPosts = postRepository.findAll();
+    public List<PostFindAllResponseDto> getPosts(int page, int size) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "modifiedAt");
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+
+        List<Post> findPosts = postRepository.findAll(pageable).getContent();
         if (findPosts.isEmpty()) throw new NotFoundPostException("NotFound Post");
         return findPosts.stream().map(PostFindAllResponseDto::new).toList();
     }

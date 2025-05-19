@@ -43,8 +43,11 @@ public class PostController {
 
     // 스케줄 전체 조회
     @GetMapping("/all")
-    public ResponseEntity<List<PostFindAllResponseDto>> getPosts() {
-        List<PostFindAllResponseDto> posts = postService.getPosts();
+    public ResponseEntity<List<PostFindAllResponseDto>> getPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<PostFindAllResponseDto> posts = postService.getPosts(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 

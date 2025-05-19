@@ -51,4 +51,8 @@ public class Post extends TimeStampEntity {
     public void updateContents(String value) {
         this.contents = value;
     }
+
+    public int getCommentsSize() {
+        return this.comments.size();
+    }
 }
