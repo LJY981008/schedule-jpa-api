@@ -58,8 +58,7 @@ public class MemberController {
             @Valid @RequestBody MemberUpdateRequestDto requestDto,
             HttpServletRequest request
     ) {
-        Optional<Member> loginMember = Optional.ofNullable((Member) request.getSession().getAttribute(Const.LOGIN_SESSION_KEY));
-        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, loginMember);
+        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
     }

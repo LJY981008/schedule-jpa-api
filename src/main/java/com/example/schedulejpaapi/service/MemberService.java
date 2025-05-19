@@ -1,12 +1,12 @@
 package com.example.schedulejpaapi.service;
 
 import com.example.schedulejpaapi.config.PasswordEncoder;
+import com.example.schedulejpaapi.config.Validator;
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.exceptions.custom.AlreadyAccountException;
 import com.example.schedulejpaapi.exceptions.custom.IncorrectPasswordException;
-import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
 import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.repository.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 // 회원 서비스
 @Service
@@ -23,10 +22,12 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Validator validator;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder) {
+    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, Validator validator) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
+        this.validator = validator;
     }
 
     // 회원 가입
@@ -49,7 +50,7 @@ public class MemberService {
     @Transactional
     public MemberSignInResponseDto loginByAccountOrEmail(MemberLoginRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember = findMemberByAccountOrEmail(requestDto.getAccount(), requestDto.getEmail());
-        Member loggedInMember = getExistingMember(findMember);
+        Member loggedInMember = findMember.orElseThrow(() -> new UnauthorizedException("Unauthorized"));
 
         boolean pwMatch = passwordEncoder.matches(requestDto.getPassword(), loggedInMember.getPassword());
         if (!pwMatch) {
@@ -57,36 +58,28 @@ public class MemberService {
         }
 
         setLoginSession(servletRequest, loggedInMember);
-
         return new MemberSignInResponseDto(loggedInMember);
     }
 
     // 로그아웃
     @Transactional
     public MemberLogoutResponseDto logout(HttpServletRequest servletRequest) {
-        Member member = expireSessionAndGetMember(servletRequest);
+        Member member = validator.getLoggedInMember(servletRequest.getSession());
+
+        invalidateSession(servletRequest);
         return new MemberLogoutResponseDto(member);
     }
 
     // 회원 정보 수정
     @Transactional
-    public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, Optional<Member> loginMember) {
+    public MemberUpdateResponseDto updateMember(MemberUpdateRequestDto requestDto, HttpServletRequest request) {
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
-        Member loggedInMember = getExistingMember(loginMember);
+        validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_MEMBER_FIELDS.keySet());
 
-        Set<String> allowedFields = Const.UPDATE_MEMBER_FIELDS.keySet();
-        Set<String> requestFields = requestUpdateMap.keySet();
-        Set<String> invalidFields = requestFields.stream()
-                .filter(field -> !allowedFields.contains(field))
-                .collect(Collectors.toSet());
-        if (!invalidFields.isEmpty()) {
-            throw new InvalidFieldException("Invalid Field");
-        }
-
+        Member loggedInMember = validator.getLoggedInMember(request.getSession());
         if(requestUpdateMap.containsKey("password")){
             requestUpdateMap.put("password", passwordEncoder.encode(requestUpdateMap.get("password")));
         }
-
         requestUpdateMap.forEach((field, value)
                 -> Const.UPDATE_MEMBER_FIELDS.get(field).accept(loggedInMember, value));
 
@@ -97,14 +90,11 @@ public class MemberService {
     // 회원 탈퇴
     @Transactional
     public MemberRemoveResponseDto removeMember(HttpServletRequest servletRequest) {
-        Member member = expireSessionAndGetMember(servletRequest);
+        Member member = validator.getLoggedInMember(servletRequest.getSession());
+
+        invalidateSession(servletRequest);
         memberRepository.delete(member);
         return new MemberRemoveResponseDto(member);
-    }
-
-    // 회원 조회 검증
-    private Member getExistingMember(Optional<Member> member) {
-        return member.orElseThrow(() -> new UnauthorizedException("Unauthorized"));
     }
 
     // 아이디 또는 이메일로 탐색
@@ -122,12 +112,9 @@ public class MemberService {
         session.setAttribute(Const.LOGIN_SESSION_KEY, member);
     }
 
-    // 쿠키+세션 삭제
-    private Member expireSessionAndGetMember(HttpServletRequest servletRequest) {
+    // 쿠키+세션 무효화
+    private void invalidateSession(HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession();
-        Member member = (Member) session.getAttribute(Const.LOGIN_SESSION_KEY);
         session.invalidate();
-
-        return member;
     }
 }
