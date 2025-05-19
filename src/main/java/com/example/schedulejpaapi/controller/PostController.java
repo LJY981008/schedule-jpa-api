@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * 스케줄 관련 API 요청을 처리하는 REST 컨트롤러
- * CRUD 기능을 제공
- */
+// 스케줄 컨트롤러
 @RestController
 @RequestMapping("/post")
 public class PostController {
@@ -24,13 +21,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    /**
-     * 스케줄 생성
-     *
-     * @param requestDto     요청 정보 DTO{@link PostCreateRequestDto}
-     * @param servletRequest HTTP 요청 객체
-     * @return 상태코드와 응답 DTO{@link PostCreateResponseDto}
-     */
+    // 스케줄 생성
     @PostMapping("/create")
     public ResponseEntity<PostCreateResponseDto> createPost(
             @Valid @RequestBody PostCreateRequestDto requestDto,
@@ -40,25 +31,17 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
-    /**
-     * 특정 스케줄 조회
-     *
-     * @param postId 조회할 스케줄 ID
-     * @return 상태코드와 조회된 스케줄 DTO{@link PostFindResponseDto}
-     */
+    // 스케줄 단건 조회
     @GetMapping("/find")
-    public ResponseEntity<PostFindResponseDto> getPostById(@RequestParam Long postId) {
+    public ResponseEntity<PostFindResponseDto> getPostById(
+            @RequestParam Long postId,
+            HttpServletRequest request
+    ) {
         PostFindResponseDto post = postService.getPostById(postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 
-    /**
-     * 스케줄 목록을 페이지네이션을 적용해 조회
-     *
-     * @param page 조회할 페이지 (기본값 : 0)
-     * @param size 한 페이지에 조회될 크기 (기본값 : 10)
-     * @return 상태코드와 스케줄 목록 DTO{@link PostFindAllResponseDto} 리스트
-     */
+    // 스케줄 전체 조회
     @GetMapping("/all")
     public ResponseEntity<List<PostFindAllResponseDto>> getPosts(
             @RequestParam(defaultValue = "0") int page,
@@ -68,37 +51,24 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 
-    /**
-     * 특정 스케줄의 내용 수정
-     *
-     * @param postId         수정할 스케줄 ID
-     * @param requestDto     요청된 수정 정보 DTO{@link PostUpdateRequestDto}
-     * @param servletRequest HTTP 요청 객체
-     * @return 수정된 스케줄 정보 DTO{@link PostUpdateResponseDto}
-     */
+    // 스케줄 제목 or 내용 변경
     @PatchMapping("/change")
     public ResponseEntity<PostUpdateResponseDto> updateMember(
             @RequestParam Long postId,
             @Valid @RequestBody PostUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            HttpServletRequest request
     ) {
-        PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, servletRequest);
+        PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, request);
         return ResponseEntity.status(HttpStatus.OK).body(postUpdateResponseDto);
     }
 
-    /**
-     * 스케줄 삭제
-     *
-     * @param postId         삭제할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체
-     * @return 상태 코드와 삭제된 스케줄 정보 DTO{@link PostRemoveResponseDto}
-     */
+    // 스케줄 삭제
     @DeleteMapping("/remove")
     public ResponseEntity<PostRemoveResponseDto> removeMember(
             @RequestParam Long postId,
-            HttpServletRequest servletRequest
+            HttpServletRequest request
     ) {
-        PostRemoveResponseDto postRemoveResponseDto = postService.removePost(postId, servletRequest);
+        PostRemoveResponseDto postRemoveResponseDto = postService.removePost(postId, request);
         return ResponseEntity.status(HttpStatus.OK).body(postRemoveResponseDto);
     }
 }

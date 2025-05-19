@@ -10,10 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-/**
- * 날짜 관련 추상 Entity 클래스
- * 데이터 생성 또는 수정 시 자동으로 갱신
- */
+// 날짜 기본 엔티티
 @Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

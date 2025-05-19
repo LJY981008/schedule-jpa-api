@@ -3,14 +3,14 @@ package com.example.schedulejpaapi.entity;
 
 import com.example.schedulejpaapi.dto.post.PostCreateRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 스케줄 정보 관리 Entity 클래스
- */
+// 스케줄 엔티티
 @Entity
 @Getter
 @Table(name = "post")
@@ -50,5 +50,9 @@ public class Post extends TimeStampEntity {
 
     public void updateContents(String value) {
         this.contents = value;
+    }
+
+    public int getCommentsSize() {
+        return this.comments.size();
     }
 }

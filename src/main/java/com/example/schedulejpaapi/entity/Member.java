@@ -7,9 +7,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 회원 정보 관리 Entity 클래스
- */
+// 회원정보 엔티티
 @Entity
 @Getter
 @Table(name = "member")

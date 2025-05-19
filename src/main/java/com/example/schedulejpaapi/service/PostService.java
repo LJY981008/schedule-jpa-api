@@ -1,7 +1,6 @@
 package com.example.schedulejpaapi.service;
 
-import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
-import com.example.schedulejpaapi.util.Validator;
+import com.example.schedulejpaapi.config.Validator;
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.post.*;
 import com.example.schedulejpaapi.entity.Member;
@@ -20,9 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-/**
- * 스케줄 관련 비지니스 로직 서비스
- */
+// 스케줄 서비스
 @Service
 public class PostService {
 
@@ -34,17 +31,11 @@ public class PostService {
         this.validator = validator;
     }
 
-    /**
-     * 새로운 스케줄 생성
-     *
-     * @param requestDto     생성할 스케줄 요청 정보
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
-     * @return 생성된 스케줄 정보 DTO {@link PostCreateResponseDto}
-     */
+    // 스케줄 생성
     @Transactional
     public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession();
-        Member writer = getLoggedInMember(session);
+        Member writer = validator.getLoggedInMember(session);
 
         Post postSetWriter = new Post(requestDto, writer);
         Post savedPost = postRepository.save(postSetWriter);
@@ -52,124 +43,67 @@ public class PostService {
         return new PostCreateResponseDto(savedPost);
     }
 
-    /**
-     * 특정 스케줄을 하나 조회
-     *
-     * @param postId 조회할 스케줄의 ID
-     * @return 조회된 스케줄의 정보 DTO {@link PostFindResponseDto}
-     */
+    // 스케줄 단건조회
     @Transactional
     public PostFindResponseDto getPostById(Long postId) {
         Post findPost = getExistingPost(postId);
         return new PostFindResponseDto(findPost);
     }
 
-    /**
-     * 스케줄 전체를 페이지네이션하여 조회
-     * 수정일 기준 내림차순
-     *
-     * @param page 조회할 페이지 (0부터 시작)
-     * @param size 한 페이지당 스케줄 수
-     * @return 조회된 게시글 목록 {@link PostFindAllResponseDto} 리스트
-     * @throws NotFoundPostException 조회 결과가 없으면 발생
-     */
+    // 스케줄 전체조회
     @Transactional(readOnly = true)
     public List<PostFindAllResponseDto> getPosts(int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, "modifiedAt");
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        List<Post> findPosts = postRepository.findAll(pageable).getContent();
-        if (findPosts.isEmpty()) {
-            throw new NotFoundPostException("NotFound Post");
-        }
 
+        List<Post> findPosts = postRepository.findAll(pageable).getContent();
+        if (findPosts.isEmpty()) throw new NotFoundPostException("NotFound Post");
         return findPosts.stream().map(PostFindAllResponseDto::new).toList();
     }
 
-    /**
-     * 특정 스케줄의 정보를 수정
-     *
-     * @param postId            수정할 스케줄의 ID
-     * @param requestDto        수정할 정보 DTO
-     * @param servletRequest    HTTP 요청 객체. 세션 정보 추출하여 사용
-     * @return 수정된 스케줄 정보 {@link PostUpdateResponseDto}
-     */
+    // 스케줄 수정
     @Transactional
-    public PostUpdateResponseDto updatePost(
-            Long postId,
-            PostUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
-    ) {
-        Post findPost = getPostAccess(postId, servletRequest);
+    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto, HttpServletRequest request) {
+        Post findPost = verifyPostAccess(postId, request);
 
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
         validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_POST_FIELDS.keySet());
 
-        requestUpdateMap.forEach((field, value) -> Const.UPDATE_POST_FIELDS.get(field).accept(findPost, value));
+        requestUpdateMap.forEach((field, value)
+                -> Const.UPDATE_POST_FIELDS.get(field).accept(findPost, value));
         Post savedPost = postRepository.save(findPost);
 
         return new PostUpdateResponseDto(savedPost);
     }
 
-    /**
-     * 특정 스케줄 삭제
-     *
-     * @param postId  삭제할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
-     * @return 삭제된 스케줄의 정보 {@link PostRemoveResponseDto}
-     */
+    // 스케줄 삭제
     @Transactional
-    public PostRemoveResponseDto removePost(Long postId, HttpServletRequest servletRequest) {
-        Post findPost = getPostAccess(postId, servletRequest);
-        findPost.getMember().getPosts().remove(findPost);
+    public PostRemoveResponseDto removePost(Long postId, HttpServletRequest request) {
+        Post findPost = verifyPostAccess(postId, request);
 
+        findPost.getMember().getPosts().remove(findPost);
         postRepository.delete(findPost);
 
         return new PostRemoveResponseDto(findPost);
     }
 
-    /**
-     * 스케줄 접근권한 확인 후 스케줄 반환
-     * 스케줄의 존재여부, 로그인 여부, 작성자 일치여부
-     *
-     * @param postId  검증할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
-     * @return 접근이 허용된 스케줄 Entity {@link Post}
-     */
-    private Post getPostAccess(Long postId, HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-
-        Member loggedInMember = getLoggedInMember(session);
+    // 로그인 검증, 게시글 탐색 후 검증, 작성자 일치 검증
+    private Post verifyPostAccess(Long postId, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Member loggedInMember = validator.getLoggedInMember(session);
         Post findPost = getExistingPost(postId);
-        validator.verifyAuthorOwner(findPost, loggedInMember, (post) -> post.getMember().getId());
+        validator.verifyAuthorOwner(findPost, loggedInMember,
+                (post) -> post.getMember().getId());
 
         return findPost;
     }
 
-    /**
-     * 특정 스케줄이 존재하는지 확인하여 반환
-     *
-     * @param postId 확인할 스케줄 ID
-     * @return 확인된 스케줄 Entity{@link Post}
-     * @throws NotFoundPostException 스케줄이 존재하지 않으면 발생
-     */
+    // 스케줄 탐색 후 검증
     private Post getExistingPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
         if (findPost.isEmpty()) throw new NotFoundPostException("NotFound Post");
         return findPost.get();
     }
 
-    /**
-     * 세션에서 로그인된 정보 호출
-     *
-     * @param session 현재 사용중인 세션
-     * @return 로그인된 Entity {@link Member}
-     * @throws UnauthorizedException 로그인된 정보가 없으면 발생
-     */
-    private Member getLoggedInMember(HttpSession session) {
-        Optional<Member> loggedInMember
-                = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if (loggedInMember.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        return loggedInMember.get();
-    }
 }

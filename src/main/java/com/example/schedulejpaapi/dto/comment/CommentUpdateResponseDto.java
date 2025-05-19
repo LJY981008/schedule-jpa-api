@@ -3,12 +3,8 @@ package com.example.schedulejpaapi.dto.comment;
 import com.example.schedulejpaapi.entity.Comment;
 import lombok.Getter;
 
-/**
- * 댓글 수정 응답 DTO
- */
 @Getter
 public class CommentUpdateResponseDto {
-
     private Long commentId;
     private String contents;
     private String createdAt;

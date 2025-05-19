@@ -5,9 +5,7 @@ import lombok.Getter;
 
 import java.util.Map;
 
-/**
- * 회원 정보 수정 요청 DTO
- */
+// 회원 정보 수정 요청
 @Getter
 public class MemberUpdateRequestDto {
 

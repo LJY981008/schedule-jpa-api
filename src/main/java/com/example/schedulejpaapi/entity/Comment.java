@@ -4,13 +4,10 @@ import com.example.schedulejpaapi.dto.comment.CommentCreateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-/**
- * 댓글 정보 관리 Entity 클래스
- */
 @Entity
 @Getter
 @Table(name = "comment")
-public class Comment extends TimeStampEntity {
+public class Comment extends TimeStampEntity{
     @Id
     @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
