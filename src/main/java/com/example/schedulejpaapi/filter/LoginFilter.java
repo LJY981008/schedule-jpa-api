@@ -21,6 +21,7 @@ public class LoginFilter implements Filter {
             "/member/logout", "/member/update",
             "/member/remove", "/post/create",
             "/post/change", "/post/remove",
+            "/comment/create"
     };
     private static final String[] POSSIBLE_LIST = {"/", "/post/all", "/post/find"};
 

@@ -40,7 +40,7 @@ public class MemberController {
             @Valid @RequestBody MemberLoginRequestDto requestDto,
             HttpServletRequest servletRequest
     ) {
-        MemberSignInResponseDto result = memberService.login(requestDto, servletRequest);
+        MemberSignInResponseDto result = memberService.loginByAccountOrEmail(requestDto, servletRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

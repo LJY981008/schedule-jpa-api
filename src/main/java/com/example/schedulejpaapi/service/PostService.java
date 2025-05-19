@@ -33,15 +33,16 @@ public class PostService {
     @Transactional
     public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession();
-        Member writer = getLoggedInMember(session);;
+        Member writer = getLoggedInMember(session);
 
         Post postSetWriter = new Post(requestDto, writer);
         Post savedPost = postRepository.save(postSetWriter);
+
         return new PostCreateResponseDto(savedPost);
     }
 
     // 스케줄 단건조회
-    @Transactional(readOnly = true)
+    @Transactional
     public PostFindResponseDto getPostById(Long postId) {
         Post findPost = getExistingPost(postId);
         return new PostFindResponseDto(findPost);

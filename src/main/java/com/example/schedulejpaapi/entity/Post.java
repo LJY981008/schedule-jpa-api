@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // 스케줄 엔티티
 @Entity
 @Getter
@@ -19,17 +22,17 @@ public class Post extends TimeStampEntity {
     private Long id;
 
     @Column(name = "title", nullable = false)
-    @Size(min = 1, max = 10)
-    @NotBlank(message = "title is empty")
     private String title;
 
     @Column(name = "contents", nullable = false, columnDefinition = "TEXT")
-    @NotBlank(message = "contents is empty")
     private String contents;
 
     @ManyToOne
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments;
 
     public Post() {
     }
@@ -38,6 +41,8 @@ public class Post extends TimeStampEntity {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.member = member;
+        this.comments = new ArrayList<>();
+
         member.getPosts().add(this);
     }
 

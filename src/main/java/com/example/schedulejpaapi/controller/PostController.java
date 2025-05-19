@@ -34,7 +34,8 @@ public class PostController {
     // 스케줄 단건 조회
     @GetMapping("/find")
     public ResponseEntity<PostFindResponseDto> getPostById(
-            @RequestParam Long postId
+            @RequestParam Long postId,
+            HttpServletRequest request
     ) {
         PostFindResponseDto post = postService.getPostById(postId);
         return ResponseEntity.status(HttpStatus.OK).body(post);

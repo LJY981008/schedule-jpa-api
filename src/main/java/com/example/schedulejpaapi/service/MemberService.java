@@ -47,7 +47,7 @@ public class MemberService {
 
     // 로그인
     @Transactional
-    public MemberSignInResponseDto login(MemberLoginRequestDto requestDto, HttpServletRequest servletRequest) {
+    public MemberSignInResponseDto loginByAccountOrEmail(MemberLoginRequestDto requestDto, HttpServletRequest servletRequest) {
         Optional<Member> findMember = findMemberByAccountOrEmail(requestDto.getAccount(), requestDto.getEmail());
         Member loggedInMember = getExistingMember(findMember);
 
@@ -107,6 +107,7 @@ public class MemberService {
         return member.orElseThrow(() -> new UnauthorizedException("Unauthorized"));
     }
 
+    // 아이디 또는 이메일로 탐색
     private Optional<Member> findMemberByAccountOrEmail(String account, String email) {
         Optional<Member> findMember = memberRepository.findByAccount(account);
         if (findMember.isEmpty()) {
