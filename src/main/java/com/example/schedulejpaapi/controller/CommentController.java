@@ -82,8 +82,11 @@ public class CommentController {
      * @return 삭제된 댓글 정보 DTO{@link CommentRemoveResponseDto}
      */
     @DeleteMapping("/remove")
-    public ResponseEntity<CommentRemoveResponseDto> removeComment(@RequestParam Long commentId) {
-        CommentRemoveResponseDto comment = commentService.removeComment(commentId);
+    public ResponseEntity<CommentRemoveResponseDto> removeComment(
+            @RequestParam Long commentId,
+            HttpServletRequest servletRequest
+    ) {
+        CommentRemoveResponseDto comment = commentService.removeComment(commentId, servletRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }

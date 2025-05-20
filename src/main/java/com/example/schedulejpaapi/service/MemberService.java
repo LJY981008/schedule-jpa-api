@@ -40,7 +40,7 @@ public class MemberService {
      * 새로운 회원 생성
      * 중복 계정 확인 및 비밀번호 암호화
      *
-     * @param requestDto     가입할 정보 DTO
+     * @param requestDto     가입할 정보 DTO{@link MemberSignUpRequestDto}}
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 생성된 회원 정보 DTO {@link MemberSignUpResponseDto}
      * @throws AlreadyAccountException 이미 존재하는 계정이면 발생
@@ -67,7 +67,7 @@ public class MemberService {
      * 계정 또는 이메일을 통한 로그인
      * 로그인 성공 시 세션설정
      *
-     * @param requestDto     로그인 정보 DTO
+     * @param requestDto     로그인 정보 DTO{@link MemberLoginRequestDto}}
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 로그인된 회원 정보 DTO {@link MemberLoginResponseDto}
      * @throws IncorrectPasswordException 비밀번호 틀릴 시 발 생
@@ -107,7 +107,7 @@ public class MemberService {
     /**
      * 회원 정보 수정
      *
-     * @param requestDto     수정할 회원 정보 DTO
+     * @param requestDto     수정할 회원 정보 DTO{@link MemberUpdateRequestDto}}
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 수정된 회원 정보 DTO{@link MemberUpdateResponseDto}
      */

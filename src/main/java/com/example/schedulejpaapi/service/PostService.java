@@ -37,7 +37,7 @@ public class PostService {
     /**
      * 새로운 스케줄 생성
      *
-     * @param requestDto     생성할 스케줄 요청 정보
+     * @param requestDto     생성할 스케줄 요청 정보 DTO{@link PostCreateRequestDto}}
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 생성된 스케줄 정보 DTO {@link PostCreateResponseDto}
      */

@@ -39,7 +39,7 @@ public class CommentService {
     /**
      * 새로운 댓글 생성 및 스케줄에 등록
      *
-     * @param requestDto     생성할 댓글 정보 DTO
+     * @param requestDto     생성할 댓글 정보 DTO{@link CommentCreateRequestDto}
      * @param postId         댓글을 등록할 스케줄 ID
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 생성된 댓글 정보 DTO{@link CommentCreateResponseDto}
@@ -76,7 +76,7 @@ public class CommentService {
      * 특정 댓글 수정
      *
      * @param commentId      수정할 댓글 ID
-     * @param requestDto     수정할 댓글 정보 DTO
+     * @param requestDto     수정할 댓글 정보 DTO{@link CommentUpdateRequestDto}
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
@@ -114,8 +114,14 @@ public class CommentService {
      * @return 삭제된 댓글 정보 DTO{@link CommentRemoveResponseDto}
      */
     @Transactional
-    public CommentRemoveResponseDto removeComment(Long commentId) {
+    public CommentRemoveResponseDto removeComment(
+            Long commentId,
+            HttpServletRequest servletRequest
+    ) {
+        Member loggedInMember = getLoggedInMember(servletRequest.getSession());
         Comment selectComment = getCommentById(commentId);
+
+        validator.verifyAuthorOwner(selectComment, loggedInMember, (comment) -> comment.getMember().getId());
         commentRepository.delete(selectComment);
         return new CommentRemoveResponseDto(selectComment);
     }
