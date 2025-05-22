@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Map;
+
 /**
  * API 전역에서 발생하는 예외처리 핸들러
  */
@@ -21,9 +23,10 @@ public class GlobalExceptionHandler {
      * @return 에러메세지와 상태 코드 반환
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getFieldError().getDefaultMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     /**
@@ -34,9 +37,10 @@ public class GlobalExceptionHandler {
      * @return 에러메세지와 상태 코드 반환
      */
     @ExceptionHandler(InvalidFieldException.class)
-    public ResponseEntity<String> handleInvalidFieldException(InvalidFieldException ex) {
+    public ResponseEntity<Map<String, String>> handleInvalidFieldException(InvalidFieldException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     /**
@@ -47,9 +51,10 @@ public class GlobalExceptionHandler {
      * @return 에러메세지와 상태 코드 반환
      */
     @ExceptionHandler(AlreadyAccountException.class)
-    public ResponseEntity<String> handleAlreadyAccountException(AlreadyAccountException ex) {
+    public ResponseEntity<Map<String, String>> handleAlreadyAccountException(AlreadyAccountException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(message);
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(errors);
     }
 
     /**
@@ -60,9 +65,10 @@ public class GlobalExceptionHandler {
      * @return 에러메세지와 상태 코드 반환
      */
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException ex) {
+    public ResponseEntity<Map<String, String>> handleUnauthorizedException(UnauthorizedException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
     }
 
     /**
@@ -73,9 +79,10 @@ public class GlobalExceptionHandler {
      * @return 에러메세지와 상태 코드 반환
      */
     @ExceptionHandler(IncorrectPasswordException.class)
-    public ResponseEntity<String> handleIncorrectPasswordException(IncorrectPasswordException ex) {
+    public ResponseEntity<Map<String, String>> handleIncorrectPasswordException(IncorrectPasswordException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
     }
 
     /**
@@ -86,8 +93,9 @@ public class GlobalExceptionHandler {
      * @return 에러메세지와 상태 코드 반환
      */
     @ExceptionHandler(NotFoundPostException.class)
-    public ResponseEntity<String> handleNotFoundPostException(NotFoundPostException ex) {
+    public ResponseEntity<Map<String, String>> handleNotFoundPostException(NotFoundPostException ex) {
         String message = ex.getMessage();
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
 }

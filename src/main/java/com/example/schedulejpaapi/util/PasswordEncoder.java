@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.config;
+package com.example.schedulejpaapi.util;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;
