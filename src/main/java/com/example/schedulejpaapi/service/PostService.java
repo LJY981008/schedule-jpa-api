@@ -91,6 +91,7 @@ public class PostService {
      * @param loggedInMember    로그인한 멤버 정보
      * @return 수정된 스케줄 정보 {@link PostUpdateResponseDto}
      */
+    //TODO QueryDsl로 변경해서 SQL 최적화 필요
     @Transactional
     public PostUpdateResponseDto updatePost(
             Long postId,
@@ -151,19 +152,5 @@ public class PostService {
         Optional<Post> findPost = postRepository.findById(postId);
         if (findPost.isEmpty()) throw new NotFoundPostException("NotFound Post");
         return findPost.get();
-    }
-
-    /**
-     * 세션에서 로그인된 정보 호출
-     *
-     * @param session 현재 사용중인 세션
-     * @return 로그인된 Entity {@link Member}
-     * @throws UnauthorizedException 로그인된 정보가 없으면 발생
-     */
-    private Member getLoggedInMember(HttpSession session) {
-        Optional<Member> loggedInMember
-                = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if (loggedInMember.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        return loggedInMember.get();
     }
 }

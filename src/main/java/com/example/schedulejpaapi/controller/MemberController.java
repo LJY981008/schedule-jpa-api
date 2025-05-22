@@ -79,15 +79,15 @@ public class MemberController {
      * 회원 정보 변경
      *
      * @param requestDto     변경할 회원 정보 DTO{@link MemberUpdateRequestDto}
-     * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 회원 정보{@link Member}
      * @return 변경된 회원 정보 DTO{@link MemberUpdateResponseDto}
      */
     @PatchMapping("/change")
     public ResponseEntity<MemberUpdateResponseDto> updateMember(
             @Valid @RequestBody MemberUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            @MemberAuth Member loggedInMember
     ) {
-        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, servletRequest);
+        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
     }

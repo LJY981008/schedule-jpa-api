@@ -106,13 +106,14 @@ public class MemberService {
      * 회원 정보 수정
      *
      * @param requestDto     수정할 회원 정보 DTO{@link MemberUpdateRequestDto}}
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember 로그인한 회원 정보{@link Member}
      * @return 수정된 회원 정보 DTO{@link MemberUpdateResponseDto}
      */
+    //TODO QueryDsl로 변경해서 SQL 최적화 필요
     @Transactional
     public MemberUpdateResponseDto updateMember(
             MemberUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            Member loggedInMember
     ) {
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
         validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_MEMBER_FIELDS.keySet());
@@ -121,7 +122,6 @@ public class MemberService {
             requestUpdateMap.put("password", passwordEncoder.encode(requestUpdateMap.get("password")));
         }
 
-        Member loggedInMember = getLoggedInMember(servletRequest.getSession());
         requestUpdateMap.forEach((field, value)
                 -> Const.UPDATE_MEMBER_FIELDS.get(field).accept(loggedInMember, value));
 
@@ -132,6 +132,7 @@ public class MemberService {
     /**
      * 회원 탈퇴
      *
+     * @param loggedInMember 로그인한 회원 정보{@link Member}
      * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 탈퇴한 회원 정보 DTO{@link MemberRemoveResponseDto}
      */
@@ -176,19 +177,5 @@ public class MemberService {
     private void invalidateSession(HttpServletRequest servletRequest) {
         HttpSession session = servletRequest.getSession();
         session.invalidate();
-    }
-
-    /**
-     * 세션에서 로그인된 정보 호출
-     *
-     * @param session 현 사용중인 세션
-     * @return 로그인된 Entity {@link Member}
-     * @throws UnauthorizedException 로그인된 정보가 없으면 발생
-     */
-    private Member getLoggedInMember(HttpSession session) {
-        Optional<Member> loggedInMember
-                = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if (loggedInMember.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        return loggedInMember.get();
     }
 }

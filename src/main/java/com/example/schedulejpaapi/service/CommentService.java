@@ -78,6 +78,7 @@ public class CommentService {
      * @param loggedInMember 로그인 멤버 정보{@link Member}
      * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
+    //TODO QueryDsl로 변경해서 SQL 최적화 필요
     @Transactional
     public CommentUpdateResponseDto updateComment(
             Long commentId,
@@ -145,18 +146,5 @@ public class CommentService {
         Optional<Comment> selectedComment = commentRepository.findById(commentId);
         if (selectedComment.isEmpty()) throw new NotFoundPostException("NotFound Comment");
         return selectedComment.get();
-    }
-
-    /**
-     * 세션에서 로그인된 정보 호출
-     *
-     * @param session 현재 사용중인 세션
-     * @return 로그인된 Entity {@link Member}
-     * @throws UnauthorizedException 로그인된 정보가 없으면 발생
-     */
-    private Member getLoggedInMember(HttpSession session) {
-        Optional<Member> loggedInMember = Optional.ofNullable((Member) session.getAttribute(Const.LOGIN_SESSION_KEY));
-        if (loggedInMember.isEmpty()) throw new UnauthorizedException("Unauthorized");
-        return loggedInMember.get();
     }
 }
