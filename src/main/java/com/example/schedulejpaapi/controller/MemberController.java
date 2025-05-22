@@ -1,7 +1,9 @@
 package com.example.schedulejpaapi.controller;
 
 import com.example.schedulejpaapi.dto.member.*;
+import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.service.MemberService;
+import com.example.schedulejpaapi.util.authresolver.MemberAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -60,11 +62,15 @@ public class MemberController {
      * 로그아웃
      *
      * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 회원 정보{@link Member}
      * @return 상태코드와 로그아웃한 회원 정보 DTO{@link MemberLogoutResponseDto}
      */
     @GetMapping("/logout")
-    public ResponseEntity<MemberLogoutResponseDto> logout(HttpServletRequest servletRequest) {
-        MemberLogoutResponseDto logoutMember = memberService.logout(servletRequest);
+    public ResponseEntity<MemberLogoutResponseDto> logout(
+            @MemberAuth Member loggedInMember,
+            HttpServletRequest servletRequest
+    ) {
+        MemberLogoutResponseDto logoutMember = memberService.logout(loggedInMember, servletRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(logoutMember);
     }
@@ -93,8 +99,11 @@ public class MemberController {
      * @return 삭제된 회원 정보 DTO{@link MemberRemoveResponseDto}
      */
     @DeleteMapping("/remove")
-    public ResponseEntity<MemberRemoveResponseDto> removeMember(HttpServletRequest servletRequest) {
-        MemberRemoveResponseDto removeMember = memberService.removeMember(servletRequest);
+    public ResponseEntity<MemberRemoveResponseDto> removeMember(
+            @MemberAuth Member loggedInMember,
+            HttpServletRequest servletRequest
+    ) {
+        MemberRemoveResponseDto removeMember = memberService.removeMember(loggedInMember, servletRequest);
 
         return ResponseEntity.status(HttpStatus.OK).body(removeMember);
     }

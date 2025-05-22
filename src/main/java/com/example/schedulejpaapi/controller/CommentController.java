@@ -1,7 +1,9 @@
 package com.example.schedulejpaapi.controller;
 
 import com.example.schedulejpaapi.dto.comment.*;
+import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.service.CommentService;
+import com.example.schedulejpaapi.util.authresolver.MemberAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -29,16 +31,16 @@ public class CommentController {
      *
      * @param requestDto     생성 요청된 댓글 DTO{@link CommentCreateRequestDto}
      * @param postId         댓글이 등록될 스케줄 ID
-     * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 생성된 댓글 정보 DTO{@link CommentCreateResponseDto}
      */
     @PostMapping("/create")
     public ResponseEntity<CommentCreateResponseDto> createComment(
             @RequestParam Long postId,
             @Valid @RequestBody CommentCreateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            @MemberAuth Member loggedInMember
     ) {
-        CommentCreateResponseDto comment = commentService.createComment(postId, requestDto, servletRequest);
+        CommentCreateResponseDto comment = commentService.createComment(postId, requestDto, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
@@ -61,16 +63,16 @@ public class CommentController {
      *
      * @param commentId      수정할 댓글 ID
      * @param requestDto     수정 정보 DTO{@link CommentUpdateRequestDto}
-     * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
     @PatchMapping("/change")
     public ResponseEntity<CommentUpdateResponseDto> updateComment(
             @RequestParam Long commentId,
             @Valid @RequestBody CommentUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            @MemberAuth Member loggedInMember
     ) {
-        CommentUpdateResponseDto comment = commentService.updateComment(commentId, requestDto, servletRequest);
+        CommentUpdateResponseDto comment = commentService.updateComment(commentId, requestDto, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
@@ -78,15 +80,16 @@ public class CommentController {
     /**
      * 댓글 삭제
      *
-     * @param commentId 삭제할 댓글 ID
+     * @param commentId         삭제할 댓글 ID
+     * @param loggedInMember    로그인한 멤버 정보{@link Member}
      * @return 삭제된 댓글 정보 DTO{@link CommentRemoveResponseDto}
      */
     @DeleteMapping("/remove")
     public ResponseEntity<CommentRemoveResponseDto> removeComment(
             @RequestParam Long commentId,
-            HttpServletRequest servletRequest
+            @MemberAuth Member loggedInMember
     ) {
-        CommentRemoveResponseDto comment = commentService.removeComment(commentId, servletRequest);
+        CommentRemoveResponseDto comment = commentService.removeComment(commentId, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }

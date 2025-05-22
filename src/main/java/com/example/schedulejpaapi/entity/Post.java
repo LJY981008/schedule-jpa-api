@@ -28,7 +28,7 @@ public class Post extends TimeStampEntity {
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToMany(mappedBy = "post")

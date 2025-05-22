@@ -38,15 +38,12 @@ public class PostService {
      * 새로운 스케줄 생성
      *
      * @param requestDto     생성할 스케줄 요청 정보 DTO{@link PostCreateRequestDto}}
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 생성된 스케줄 정보 DTO {@link PostCreateResponseDto}
      */
     @Transactional
-    public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-        Member writer = getLoggedInMember(session);
-
-        Post postSetWriter = new Post(requestDto, writer);
+    public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, Member loggedInMember) {
+        Post postSetWriter = new Post(requestDto, loggedInMember);
         Post savedPost = postRepository.save(postSetWriter);
 
         return new PostCreateResponseDto(savedPost);
@@ -91,16 +88,16 @@ public class PostService {
      *
      * @param postId            수정할 스케줄의 ID
      * @param requestDto        수정할 정보 DTO
-     * @param servletRequest    HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember    로그인한 멤버 정보
      * @return 수정된 스케줄 정보 {@link PostUpdateResponseDto}
      */
     @Transactional
     public PostUpdateResponseDto updatePost(
             Long postId,
             PostUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            Member loggedInMember
     ) {
-        Post findPost = getPostAccess(postId, servletRequest);
+        Post findPost = getPostAccess(postId, loggedInMember);
 
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
         validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_POST_FIELDS.keySet());
@@ -115,12 +112,12 @@ public class PostService {
      * 특정 스케줄 삭제
      *
      * @param postId  삭제할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 삭제된 스케줄의 정보 {@link PostRemoveResponseDto}
      */
     @Transactional
-    public PostRemoveResponseDto removePost(Long postId, HttpServletRequest servletRequest) {
-        Post findPost = getPostAccess(postId, servletRequest);
+    public PostRemoveResponseDto removePost(Long postId, Member loggedInMember) {
+        Post findPost = getPostAccess(postId, loggedInMember);
         findPost.getMember().getPosts().remove(findPost);
 
         postRepository.delete(findPost);
@@ -133,13 +130,10 @@ public class PostService {
      * 스케줄의 존재여부, 로그인 여부, 작성자 일치여부
      *
      * @param postId  검증할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 접근이 허용된 스케줄 Entity {@link Post}
      */
-    private Post getPostAccess(Long postId, HttpServletRequest servletRequest) {
-        HttpSession session = servletRequest.getSession();
-
-        Member loggedInMember = getLoggedInMember(session);
+    private Post getPostAccess(Long postId, Member loggedInMember) {
         Post findPost = getExistingPost(postId);
         validator.verifyAuthorOwner(findPost, loggedInMember, (post) -> post.getMember().getId());
 

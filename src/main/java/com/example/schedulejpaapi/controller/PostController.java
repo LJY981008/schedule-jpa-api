@@ -1,7 +1,9 @@
 package com.example.schedulejpaapi.controller;
 
 import com.example.schedulejpaapi.dto.post.*;
+import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.service.PostService;
+import com.example.schedulejpaapi.util.authresolver.MemberAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -28,15 +30,15 @@ public class PostController {
      * 스케줄 생성
      *
      * @param requestDto     요청 정보 DTO{@link PostCreateRequestDto}
-     * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 상태코드와 응답 DTO{@link PostCreateResponseDto}
      */
     @PostMapping("/create")
     public ResponseEntity<PostCreateResponseDto> createPost(
             @Valid @RequestBody PostCreateRequestDto requestDto,
-            HttpServletRequest servletRequest
-    ) {
-        PostCreateResponseDto post = postService.createPost(requestDto, servletRequest);
+            @MemberAuth Member loggedInMember
+            ) {
+        PostCreateResponseDto post = postService.createPost(requestDto, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
@@ -76,16 +78,16 @@ public class PostController {
      *
      * @param postId         수정할 스케줄 ID
      * @param requestDto     요청된 수정 정보 DTO{@link PostUpdateRequestDto}
-     * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 수정된 스케줄 정보 DTO{@link PostUpdateResponseDto}
      */
     @PatchMapping("/change")
     public ResponseEntity<PostUpdateResponseDto> updateMember(
             @RequestParam Long postId,
             @Valid @RequestBody PostUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            @MemberAuth Member loggedInMember
     ) {
-        PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, servletRequest);
+        PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(postUpdateResponseDto);
     }
@@ -94,15 +96,15 @@ public class PostController {
      * 스케줄 삭제
      *
      * @param postId         삭제할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체
+     * @param loggedInMember 로그인한 멤버 정보{@link Member}
      * @return 상태 코드와 삭제된 스케줄 정보 DTO{@link PostRemoveResponseDto}
      */
     @DeleteMapping("/remove")
     public ResponseEntity<PostRemoveResponseDto> removeMember(
             @RequestParam Long postId,
-            HttpServletRequest servletRequest
+            @MemberAuth Member loggedInMember
     ) {
-        PostRemoveResponseDto postRemoveResponseDto = postService.removePost(postId, servletRequest);
+        PostRemoveResponseDto postRemoveResponseDto = postService.removePost(postId, loggedInMember);
 
         return ResponseEntity.status(HttpStatus.OK).body(postRemoveResponseDto);
     }

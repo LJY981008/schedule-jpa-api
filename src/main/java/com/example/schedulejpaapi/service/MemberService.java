@@ -93,15 +93,13 @@ public class MemberService {
      * 로그아웃
      * 로그인 상태면 로그아웃하고 세션 무효화
      *
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param servletRequest HTTP 요청 객체
      * @return 로그아웃된 회원의 정보 DTO {@link MemberLogoutResponseDto}
      */
     @Transactional
-    public MemberLogoutResponseDto logout(HttpServletRequest servletRequest) {
-        Member member = getLoggedInMember(servletRequest.getSession());
-
+    public MemberLogoutResponseDto logout(Member loggedInMember, HttpServletRequest servletRequest) {
         invalidateSession(servletRequest);
-        return new MemberLogoutResponseDto(member);
+        return new MemberLogoutResponseDto(loggedInMember);
     }
 
     /**
@@ -138,12 +136,10 @@ public class MemberService {
      * @return 탈퇴한 회원 정보 DTO{@link MemberRemoveResponseDto}
      */
     @Transactional
-    public MemberRemoveResponseDto removeMember(HttpServletRequest servletRequest) {
-        Member member = getLoggedInMember(servletRequest.getSession());
-
+    public MemberRemoveResponseDto removeMember(Member loggedInMember, HttpServletRequest servletRequest) {
         invalidateSession(servletRequest);
-        memberRepository.delete(member);
-        return new MemberRemoveResponseDto(member);
+        memberRepository.delete(loggedInMember);
+        return new MemberRemoveResponseDto(loggedInMember);
     }
 
     /**

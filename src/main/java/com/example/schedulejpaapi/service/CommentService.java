@@ -10,6 +10,7 @@ import com.example.schedulejpaapi.entity.Post;
 import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
 import com.example.schedulejpaapi.repository.CommentRepository;
 import com.example.schedulejpaapi.repository.PostRepository;
+import com.example.schedulejpaapi.util.authresolver.MemberAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
@@ -41,17 +42,16 @@ public class CommentService {
      *
      * @param requestDto     생성할 댓글 정보 DTO{@link CommentCreateRequestDto}
      * @param postId         댓글을 등록할 스케줄 ID
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember HTTP 요청 객체. 세션 정보 추출하여 사용
      * @return 생성된 댓글 정보 DTO{@link CommentCreateResponseDto}
      */
     @Transactional
     public CommentCreateResponseDto createComment(
             Long postId,
             CommentCreateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            Member loggedInMember
     ) {
         Post selectPost = getPostById(postId);
-        Member loggedInMember = getLoggedInMember(servletRequest.getSession());
         Comment comment = new Comment(requestDto, selectPost, loggedInMember);
 
         Comment savedComment = commentRepository.save(comment);
@@ -77,16 +77,15 @@ public class CommentService {
      *
      * @param commentId      수정할 댓글 ID
      * @param requestDto     수정할 댓글 정보 DTO{@link CommentUpdateRequestDto}
-     * @param servletRequest HTTP 요청 객체. 세션 정보 추출하여 사용
+     * @param loggedInMember 로그인 멤버 정보{@link Member}
      * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
     @Transactional
     public CommentUpdateResponseDto updateComment(
             Long commentId,
             CommentUpdateRequestDto requestDto,
-            HttpServletRequest servletRequest
+            Member loggedInMember
     ) {
-        Member loggedInMember = getLoggedInMember(servletRequest.getSession());
         Comment selectComment = getCommentById(commentId);
         validator.verifyAuthorOwner(
                 selectComment,
@@ -116,9 +115,8 @@ public class CommentService {
     @Transactional
     public CommentRemoveResponseDto removeComment(
             Long commentId,
-            HttpServletRequest servletRequest
+            Member loggedInMember
     ) {
-        Member loggedInMember = getLoggedInMember(servletRequest.getSession());
         Comment selectComment = getCommentById(commentId);
 
         validator.verifyAuthorOwner(selectComment, loggedInMember, (comment) -> comment.getMember().getId());
