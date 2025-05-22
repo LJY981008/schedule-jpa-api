@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.util.authresolver;
+package com.example.schedulejpaapi.config.authresolver;
 
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.entity.Member;

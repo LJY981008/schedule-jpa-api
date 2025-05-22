@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.util.authresolver;
+package com.example.schedulejpaapi.config.authresolver;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

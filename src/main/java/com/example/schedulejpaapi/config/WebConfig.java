@@ -1,5 +1,6 @@
-package com.example.schedulejpaapi.util.authresolver;
+package com.example.schedulejpaapi.config;
 
+import com.example.schedulejpaapi.config.authresolver.MemberAuthArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

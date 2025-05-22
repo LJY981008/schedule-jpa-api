@@ -1,6 +1,6 @@
 package com.example.schedulejpaapi.service;
 
-import com.example.schedulejpaapi.util.PasswordEncoder;
+import com.example.schedulejpaapi.config.PasswordEncoder;
 import com.example.schedulejpaapi.util.Validator;
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.member.*;

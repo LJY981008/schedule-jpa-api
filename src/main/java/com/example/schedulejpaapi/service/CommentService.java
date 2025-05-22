@@ -10,8 +10,6 @@ import com.example.schedulejpaapi.entity.Post;
 import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
 import com.example.schedulejpaapi.repository.CommentRepository;
 import com.example.schedulejpaapi.repository.PostRepository;
-import com.example.schedulejpaapi.util.authresolver.MemberAuth;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

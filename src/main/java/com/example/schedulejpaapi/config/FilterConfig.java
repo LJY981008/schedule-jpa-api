@@ -1,5 +1,6 @@
-package com.example.schedulejpaapi.filter;
+package com.example.schedulejpaapi.config;
 
+import com.example.schedulejpaapi.filter.LoginFilter;
 import jakarta.servlet.Filter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

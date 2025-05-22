@@ -3,7 +3,7 @@ package com.example.schedulejpaapi.controller;
 import com.example.schedulejpaapi.dto.member.*;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.service.MemberService;
-import com.example.schedulejpaapi.util.authresolver.MemberAuth;
+import com.example.schedulejpaapi.config.authresolver.MemberAuth;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
