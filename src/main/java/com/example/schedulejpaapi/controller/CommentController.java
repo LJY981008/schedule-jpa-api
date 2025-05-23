@@ -1,6 +1,7 @@
 package com.example.schedulejpaapi.controller;
 
 import com.example.schedulejpaapi.dto.comment.*;
+import com.example.schedulejpaapi.entity.Comment;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.service.CommentService;
 import com.example.schedulejpaapi.config.authresolver.MemberAuth;
@@ -48,11 +49,11 @@ public class CommentController {
      * 특정 스케줄에 등록된 댓글 목록
      *
      * @param postId 조회할 스케줄 ID
-     * @return 조회된 댓글 정보 DTO{@link CommentFindByPostResponseDto} 리스트
+     * @return 조회된 댓글 정보 DTO{@link CommentFindResponseDto} 리스트
      */
     @GetMapping
-    public ResponseEntity<List<CommentFindByPostResponseDto>> getCommentsByPostId(@RequestParam Long postId) {
-        List<CommentFindByPostResponseDto> comments = commentService.getCommentsByPostId(postId);
+    public ResponseEntity<List<CommentFindResponseDto>> getCommentsByPostId(@RequestParam Long postId) {
+        List<CommentFindResponseDto> comments = commentService.getCommentsByPostId(postId);
 
         return ResponseEntity.status(HttpStatus.OK).body(comments);
     }
@@ -63,16 +64,16 @@ public class CommentController {
      * @param commentId      수정할 댓글 ID
      * @param requestDto     수정 정보 DTO{@link CommentUpdateRequestDto}
      * @param loggedInMember 로그인한 멤버 정보{@link Member}
-     * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
+     * @return 수정된 댓글 정보 DTO{@link CommentFindResponseDto}
      */
     @PatchMapping("/change")
-    public ResponseEntity<CommentUpdateResponseDto> updateComment(
+    public ResponseEntity<CommentFindResponseDto> updateComment(
             @RequestParam Long commentId,
             @Valid @RequestBody CommentUpdateRequestDto requestDto,
             @MemberAuth Member loggedInMember
     ) {
-        CommentUpdateResponseDto comment = commentService.updateComment(commentId, requestDto, loggedInMember);
-
+        commentService.updateComment(commentId, requestDto, loggedInMember);
+        CommentFindResponseDto comment = commentService.getCommentById(commentId);
         return ResponseEntity.status(HttpStatus.OK).body(comment);
     }
 

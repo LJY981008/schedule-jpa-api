@@ -7,7 +7,7 @@ import lombok.Getter;
  * 댓글 조회 응답 DTO
  */
 @Getter
-public class CommentFindByPostResponseDto {
+public class CommentFindResponseDto {
 
     private Long commentId;
     private String contents;
@@ -16,7 +16,7 @@ public class CommentFindByPostResponseDto {
     private Long postId;
     private String memberName;
 
-    public CommentFindByPostResponseDto(Comment comment){
+    public CommentFindResponseDto(Comment comment){
         this.commentId = comment.getId();
         this.contents = comment.getContents();
         this.createdAt = comment.getCreatedAt().toString();

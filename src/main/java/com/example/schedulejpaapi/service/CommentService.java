@@ -47,7 +47,7 @@ public class CommentService {
             CommentCreateRequestDto requestDto,
             Member loggedInMember
     ) {
-        Post selectPost = getPostById(postId);
+        Post selectPost = getPostByIdOrElseThrow(postId);
         Comment comment = new Comment(requestDto, selectPost, loggedInMember);
 
         Comment savedComment = commentRepository.save(comment);
@@ -58,14 +58,26 @@ public class CommentService {
      * 특정 스케줄의 댓글 목록을 조회
      *
      * @param postId 조회할 스케줄의 ID
-     * @return 조회된 댓글 목록 DTO{@link CommentFindByPostResponseDto} 리스트
+     * @return 조회된 댓글 목록 DTO{@link CommentFindResponseDto} 리스트
      */
     @Transactional(readOnly = true)
-    public List<CommentFindByPostResponseDto> getCommentsByPostId(Long postId) {
-        Post selectPost = getPostById(postId);
+    public List<CommentFindResponseDto> getCommentsByPostId(Long postId) {
+        Post selectPost = getPostByIdOrElseThrow(postId);
         List<Comment> comments = commentRepository.findByPost(selectPost);
 
-        return comments.stream().map(CommentFindByPostResponseDto::new).toList();
+        return comments.stream().map(CommentFindResponseDto::new).toList();
+    }
+
+    /**
+     * 댓글 단건 조회
+     *
+     * @param commentId 댓글 ID
+     * @return 조회된 댓글 DTO{@link CommentFindResponseDto}
+     */
+    @Transactional(readOnly = true)
+    public CommentFindResponseDto getCommentById(Long commentId) {
+        Comment comment = getCommentByIdOrElseThrow(commentId);
+        return new CommentFindResponseDto(comment);
     }
 
     /**
@@ -76,14 +88,13 @@ public class CommentService {
      * @param loggedInMember 로그인 멤버 정보{@link Member}
      * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
-    //TODO QueryDsl로 변경해서 SQL 최적화 필요
     @Transactional
-    public CommentUpdateResponseDto updateComment(
+    public void updateComment(
             Long commentId,
             CommentUpdateRequestDto requestDto,
             Member loggedInMember
     ) {
-        Comment selectComment = getCommentById(commentId);
+        Comment selectComment = getCommentByIdOrElseThrow(commentId);
         validator.verifyAuthorOwner(
                 selectComment,
                 loggedInMember,
@@ -93,14 +104,8 @@ public class CommentService {
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
         validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_COMMENT_FIELDS.keySet());
 
-        requestUpdateMap.forEach(
-                (field, value) -> Const.UPDATE_COMMENT_FIELDS
-                        .get(field)
-                        .accept(selectComment, value)
-        );
-        Comment savedComment = commentRepository.save(selectComment);
-
-        return new CommentUpdateResponseDto(savedComment);
+        long updatedResult = commentRepository.updateComment(commentId, requestUpdateMap);
+        if (updatedResult == 0) throw new NotFoundPostException("NotFound Comment");
     }
 
     /**
@@ -114,7 +119,7 @@ public class CommentService {
             Long commentId,
             Member loggedInMember
     ) {
-        Comment selectComment = getCommentById(commentId);
+        Comment selectComment = getCommentByIdOrElseThrow(commentId);
 
         validator.verifyAuthorOwner(selectComment, loggedInMember, (comment) -> comment.getMember().getId());
         commentRepository.delete(selectComment);
@@ -128,7 +133,7 @@ public class CommentService {
      * @return 조회된 스케줄 정보 Entity{@link Post}
      * @throws NotFoundPostException 스케줄이 존재하지 않으면 발생
      */
-    private Post getPostById(Long postId) {
+    private Post getPostByIdOrElseThrow(Long postId) {
         Optional<Post> selectedPost = postRepository.findById(postId);
         if (selectedPost.isEmpty()) throw new NotFoundPostException("NotFound Post");
         return selectedPost.get();
@@ -140,7 +145,7 @@ public class CommentService {
      * @param commentId 조회할 댓글 ID
      * @return 조회된 댓글 Entity{@link Comment}
      */
-    private Comment getCommentById(Long commentId) {
+    private Comment getCommentByIdOrElseThrow(Long commentId) {
         Optional<Comment> selectedComment = commentRepository.findById(commentId);
         if (selectedComment.isEmpty()) throw new NotFoundPostException("NotFound Comment");
         return selectedComment.get();

@@ -10,7 +10,7 @@ import java.util.List;
  * {@link Comment} Entity에 대한 데이터 접근을 제공하는 Repository 인터페이스
  * {@link JpaRepository}를 상속받아 CRUD 수행
  */
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long>, CommentRepositoryCustom {
 
     /**
      * 특정 스케줄의 모든 댓글 조회
