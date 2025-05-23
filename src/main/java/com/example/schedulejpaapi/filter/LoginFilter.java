@@ -51,7 +51,6 @@ public class LoginFilter implements Filter {
                     throw new SessionException("Already Logout");
                 }
             }
-
             filterChain.doFilter(servletRequest, servletResponse);
         } catch (SessionException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

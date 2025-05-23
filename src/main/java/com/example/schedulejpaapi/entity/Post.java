@@ -27,7 +27,7 @@ public class Post extends TimeStampEntity {
     @Column(name = "contents", nullable = false, columnDefinition = "TEXT")
     private String contents;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -42,6 +42,12 @@ public class Post extends TimeStampEntity {
         this.contents = requestDto.getContents();
         this.member = member;
         this.comments = new ArrayList<>();
+    }
+
+    public Post(Long id, String title, String contents) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
     }
 
     public void updateTitle(String value) {

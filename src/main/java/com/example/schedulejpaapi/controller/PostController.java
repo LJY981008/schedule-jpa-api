@@ -78,17 +78,17 @@ public class PostController {
      * @param postId         수정할 스케줄 ID
      * @param requestDto     요청된 수정 정보 DTO{@link PostUpdateRequestDto}
      * @param loggedInMember 로그인한 멤버 정보{@link Member}
-     * @return 수정된 스케줄 정보 DTO{@link PostUpdateResponseDto}
+     * @return 수정된 스케줄 정보 DTO{@link PostFindResponseDto}
      */
     @PatchMapping("/change")
-    public ResponseEntity<PostUpdateResponseDto> updateMember(
+    public ResponseEntity<PostFindResponseDto> updateMember(
             @RequestParam Long postId,
             @Valid @RequestBody PostUpdateRequestDto requestDto,
             @MemberAuth Member loggedInMember
     ) {
-        PostUpdateResponseDto postUpdateResponseDto = postService.updatePost(postId, requestDto, loggedInMember);
-
-        return ResponseEntity.status(HttpStatus.OK).body(postUpdateResponseDto);
+        postService.updatePost(postId, requestDto, loggedInMember);
+        PostFindResponseDto postById = postService.getPostById(postId);
+        return ResponseEntity.status(HttpStatus.OK).body(postById);
     }
 
     /**

@@ -98,4 +98,11 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = Map.of("errors", message);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
+
+    @ExceptionHandler(IllegalSqlStatementException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalSqlStatementException(IllegalSqlStatementException ex) {
+        String message = ex.getMessage();
+        Map<String, String> errors = Map.of("errors", message);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
 }

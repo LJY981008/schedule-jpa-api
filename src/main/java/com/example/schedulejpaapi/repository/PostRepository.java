@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
  * {@link Post} Entity에 대한 데이터 접근을 제공하는 Repository 인터페이스
  * {@link JpaRepository}를 상속받아 CRUD 수행
  */
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, PostRepositoryCustom {
 
     /**
      * 모든 Entity를 페이지 단위로 조회

@@ -1,6 +1,5 @@
 package com.example.schedulejpaapi.service;
 
-import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.util.Validator;
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.comment.*;
@@ -10,7 +9,6 @@ import com.example.schedulejpaapi.entity.Post;
 import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
 import com.example.schedulejpaapi.repository.CommentRepository;
 import com.example.schedulejpaapi.repository.PostRepository;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

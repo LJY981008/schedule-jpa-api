@@ -1,6 +1,5 @@
 package com.example.schedulejpaapi.service;
 
-import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
 import com.example.schedulejpaapi.util.Validator;
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.dto.post.*;
@@ -8,8 +7,6 @@ import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.entity.Post;
 import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
 import com.example.schedulejpaapi.repository.PostRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -57,8 +54,10 @@ public class PostService {
      */
     @Transactional
     public PostFindResponseDto getPostById(Long postId) {
-        Post findPost = getExistingPost(postId);
-        return new PostFindResponseDto(findPost);
+        Optional<Post> findPost = postRepository.findById(postId);
+        if (findPost.isEmpty()) throw new NotFoundPostException("NotFound Post");
+
+        return new PostFindResponseDto(findPost.get());
     }
 
     /**
@@ -89,11 +88,9 @@ public class PostService {
      * @param postId            수정할 스케줄의 ID
      * @param requestDto        수정할 정보 DTO
      * @param loggedInMember    로그인한 멤버 정보
-     * @return 수정된 스케줄 정보 {@link PostUpdateResponseDto}
      */
-    //TODO QueryDsl로 변경해서 SQL 최적화 필요
     @Transactional
-    public PostUpdateResponseDto updatePost(
+    public void updatePost(
             Long postId,
             PostUpdateRequestDto requestDto,
             Member loggedInMember
@@ -103,10 +100,8 @@ public class PostService {
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
         validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_POST_FIELDS.keySet());
 
-        requestUpdateMap.forEach((field, value) -> Const.UPDATE_POST_FIELDS.get(field).accept(findPost, value));
-        Post savedPost = postRepository.save(findPost);
-
-        return new PostUpdateResponseDto(savedPost);
+        long updateResult = postRepository.updatePostOfTitleOrContents(findPost.getId(), requestUpdateMap);
+        if (updateResult == 0) throw new NotFoundPostException("NotFound Post");
     }
 
     /**
@@ -135,22 +130,10 @@ public class PostService {
      * @return 접근이 허용된 스케줄 Entity {@link Post}
      */
     private Post getPostAccess(Long postId, Member loggedInMember) {
-        Post findPost = getExistingPost(postId);
-        validator.verifyAuthorOwner(findPost, loggedInMember, (post) -> post.getMember().getId());
-
-        return findPost;
-    }
-
-    /**
-     * 특정 스케줄이 존재하는지 확인하여 반환
-     *
-     * @param postId 확인할 스케줄 ID
-     * @return 확인된 스케줄 Entity{@link Post}
-     * @throws NotFoundPostException 스케줄이 존재하지 않으면 발생
-     */
-    private Post getExistingPost(Long postId) {
         Optional<Post> findPost = postRepository.findById(postId);
         if (findPost.isEmpty()) throw new NotFoundPostException("NotFound Post");
+
+        validator.verifyAuthorOwner(findPost.get(), loggedInMember, (post) -> post.getMember().getId());
         return findPost.get();
     }
 }
