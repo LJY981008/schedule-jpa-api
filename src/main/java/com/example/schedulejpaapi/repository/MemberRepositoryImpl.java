@@ -1,8 +1,7 @@
 package com.example.schedulejpaapi.repository;
 
-import com.example.schedulejpaapi.entity.QPost;
-import com.example.schedulejpaapi.exceptions.custom.IllegalSqlStatementException;
-import com.example.schedulejpaapi.enums.PostUpdateField;
+import com.example.schedulejpaapi.entity.QMember;
+import com.example.schedulejpaapi.enums.MemberUpdateField;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -13,29 +12,29 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class PostRepositoryImpl implements PostRepositoryCustom {
+public class MemberRepositoryImpl implements MemberRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
 
-    public PostRepositoryImpl(JPAQueryFactory queryFactory) {
+    public MemberRepositoryImpl(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
 
     @Override
-    public long updatePost(Long postId, Map<String, String> requestMap) {
+    public long updateMember(long memberId, Map<String, String> requestMap) {
         if(requestMap.isEmpty()) {
-            throw new IllegalSqlStatementException("empty request content");
+            throw new IllegalArgumentException("empty request content");
         }
 
-        QPost post = QPost.post;
-        JPAUpdateClause updateClause = queryFactory.update(post).where(post.id.eq(postId));
+        QMember member = QMember.member;
+        JPAUpdateClause updateClause = queryFactory.update(member).where(member.id.eq(memberId));
 
         for(Map.Entry<String, String> entry : requestMap.entrySet()) {
             String fieldName = entry.getKey();
             String fieldValue = entry.getValue();
 
-            Optional<PostUpdateField> updateField = Optional.ofNullable(PostUpdateField.fromFieldName(fieldName));
-            if(updateField.isEmpty()) throw new IllegalSqlStatementException("illegal field name");
+            Optional<MemberUpdateField> updateField = Optional.ofNullable(MemberUpdateField.fromFieldName(fieldName));
+            if(updateField.isEmpty()) throw new IllegalArgumentException("illegal field name");
 
             Path<?> qPath = updateField.get().getQPath();
             updateClause.set((StringPath) qPath, fieldValue);

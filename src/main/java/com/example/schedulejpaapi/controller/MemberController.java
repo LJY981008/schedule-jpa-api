@@ -80,16 +80,16 @@ public class MemberController {
      *
      * @param requestDto     변경할 회원 정보 DTO{@link MemberUpdateRequestDto}
      * @param loggedInMember 로그인한 회원 정보{@link Member}
-     * @return 변경된 회원 정보 DTO{@link MemberUpdateResponseDto}
+     * @return 변경된 회원 정보 DTO{@link MemberSummationResponseDto}
      */
     @PatchMapping("/change")
-    public ResponseEntity<MemberUpdateResponseDto> updateMember(
+    public ResponseEntity<MemberSummationResponseDto> updateMember(
             @Valid @RequestBody MemberUpdateRequestDto requestDto,
             @MemberAuth Member loggedInMember
     ) {
-        MemberUpdateResponseDto memberUpdateResponseDto = memberService.updateMember(requestDto, loggedInMember);
-
-        return ResponseEntity.status(HttpStatus.OK).body(memberUpdateResponseDto);
+        memberService.updateMember(requestDto, loggedInMember);
+        MemberSummationResponseDto member = memberService.getMemberById(loggedInMember.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(member);
     }
 
     /**

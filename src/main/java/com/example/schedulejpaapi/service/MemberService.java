@@ -90,6 +90,21 @@ public class MemberService {
     }
 
     /**
+     * 멤버 검색
+     *
+     * @param memberId 검색할 멤버 ID(Index)
+     * @return 검색된 멤버 요약정보 DTO{@link MemberSummationResponseDto}
+     */
+    @Transactional(readOnly = true)
+    public MemberSummationResponseDto getMemberById(Long memberId) {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        if (findMember.isEmpty()) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+        return new MemberSummationResponseDto(findMember.get());
+    }
+
+    /**
      * 로그아웃
      * 로그인 상태면 로그아웃하고 세션 무효화
      *
@@ -107,11 +122,9 @@ public class MemberService {
      *
      * @param requestDto     수정할 회원 정보 DTO{@link MemberUpdateRequestDto}}
      * @param loggedInMember 로그인한 회원 정보{@link Member}
-     * @return 수정된 회원 정보 DTO{@link MemberUpdateResponseDto}
      */
-    //TODO QueryDsl로 변경해서 SQL 최적화 필요
     @Transactional
-    public MemberUpdateResponseDto updateMember(
+    public void updateMember(
             MemberUpdateRequestDto requestDto,
             Member loggedInMember
     ) {
@@ -122,11 +135,10 @@ public class MemberService {
             requestUpdateMap.put("password", passwordEncoder.encode(requestUpdateMap.get("password")));
         }
 
-        requestUpdateMap.forEach((field, value)
-                -> Const.UPDATE_MEMBER_FIELDS.get(field).accept(loggedInMember, value));
-
-        Member savedMember = memberRepository.save(loggedInMember);
-        return new MemberUpdateResponseDto(savedMember);
+        long updatedResult = memberRepository.updateMember(loggedInMember.getId(), requestUpdateMap);
+        if(updatedResult == 0) {
+            throw new UnauthorizedException("Unauthorized");
+        }
     }
 
     /**

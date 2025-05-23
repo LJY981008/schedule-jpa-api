@@ -9,10 +9,12 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
+import org.springframework.stereotype.Repository;
 
 import java.util.Map;
 import java.util.Optional;
 
+@Repository
 public class CommentRepositoryImpl implements CommentRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;

@@ -9,7 +9,7 @@ import java.util.Optional;
  * {@link Member} Entity에 대한 데이터 접근을 제공하는 Repository 인터페이스
  * {@link JpaRepository}를 상속받아 CRUD 수행
  */
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     /**
      * 계정으로 회원 조회

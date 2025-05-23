@@ -100,8 +100,8 @@ public class PostService {
         Map<String, String> requestUpdateMap = requestDto.getUpdateMap();
         validator.verifyUpdatableField(requestUpdateMap, Const.UPDATE_POST_FIELDS.keySet());
 
-        long updateResult = postRepository.updatePostOfTitleOrContents(findPost.getId(), requestUpdateMap);
-        if (updateResult == 0) throw new NotFoundPostException("NotFound Post");
+        long updatedResult = postRepository.updatePost(findPost.getId(), requestUpdateMap);
+        if (updatedResult == 0) throw new NotFoundPostException("NotFound Post");
     }
 
     /**
