@@ -1,5 +1,5 @@
 ## 트러블 슈팅
-[매번 인증 코드를 넣어야하는데 이를 하나로 해결해주는 ArgumentResolver를 사용해보자](https://t-era.tistory.com/257)
+[매번 인증 코드를 넣어야하는데 이를 하나로 해결해주는 ArgumentResolver를 사용해보자](https://t-era.tistory.com/257)</br>
 [쿼리를 직접적으로 작성하는 건 아쉬워서 DSL을 사용해봤다 근데 왜 업데이트가 반영이 안되지?](https://t-era.tistory.com/258)
 ## ERD
 
