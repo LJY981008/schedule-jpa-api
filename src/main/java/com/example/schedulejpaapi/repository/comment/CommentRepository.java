@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.repository;
+package com.example.schedulejpaapi.repository.comment;
 
 import com.example.schedulejpaapi.entity.Comment;
 import com.example.schedulejpaapi.entity.Post;

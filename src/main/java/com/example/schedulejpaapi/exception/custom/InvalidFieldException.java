@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.exceptions.custom;
+package com.example.schedulejpaapi.exception.custom;
 
 public class InvalidFieldException extends RuntimeException{
     public InvalidFieldException(String message) {

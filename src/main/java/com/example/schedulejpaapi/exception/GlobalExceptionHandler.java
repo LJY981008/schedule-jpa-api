@@ -1,6 +1,6 @@
-package com.example.schedulejpaapi.exceptions;
+package com.example.schedulejpaapi.exception;
 
-import com.example.schedulejpaapi.exceptions.custom.*;
+import com.example.schedulejpaapi.exception.custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

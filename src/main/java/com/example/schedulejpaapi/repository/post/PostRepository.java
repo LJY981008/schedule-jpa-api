@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.repository;
+package com.example.schedulejpaapi.repository.post;
 
 import com.example.schedulejpaapi.entity.Post;
 import org.springframework.data.domain.Page;

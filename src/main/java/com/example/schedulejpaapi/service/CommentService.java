@@ -6,9 +6,9 @@ import com.example.schedulejpaapi.dto.comment.*;
 import com.example.schedulejpaapi.entity.Comment;
 import com.example.schedulejpaapi.entity.Member;
 import com.example.schedulejpaapi.entity.Post;
-import com.example.schedulejpaapi.exceptions.custom.NotFoundPostException;
-import com.example.schedulejpaapi.repository.CommentRepository;
-import com.example.schedulejpaapi.repository.PostRepository;
+import com.example.schedulejpaapi.exception.custom.NotFoundPostException;
+import com.example.schedulejpaapi.repository.comment.CommentRepository;
+import com.example.schedulejpaapi.repository.post.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

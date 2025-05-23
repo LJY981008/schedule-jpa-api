@@ -24,4 +24,11 @@ public class MemberSignUpRequestDto {
     @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$",
             message = "incorrect format of email")
     private String email;
+
+    public MemberSignUpRequestDto(String account, String password, String name, String email) {
+        this.account = account;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+    }
 }

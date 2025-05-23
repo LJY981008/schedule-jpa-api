@@ -1,10 +1,8 @@
-package com.example.schedulejpaapi.repository;
+package com.example.schedulejpaapi.repository.comment;
 
 import com.example.schedulejpaapi.entity.QComment;
-import com.example.schedulejpaapi.entity.QPost;
 import com.example.schedulejpaapi.enums.CommentUpdateField;
-import com.example.schedulejpaapi.enums.PostUpdateField;
-import com.example.schedulejpaapi.exceptions.custom.IllegalSqlStatementException;
+import com.example.schedulejpaapi.exception.custom.IllegalSqlStatementException;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.StringPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;

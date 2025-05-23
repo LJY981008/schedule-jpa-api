@@ -1,7 +1,7 @@
 package com.example.schedulejpaapi.filter;
 
 import com.example.schedulejpaapi.constant.Const;
-import com.example.schedulejpaapi.exceptions.custom.SessionException;
+import com.example.schedulejpaapi.exception.custom.SessionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

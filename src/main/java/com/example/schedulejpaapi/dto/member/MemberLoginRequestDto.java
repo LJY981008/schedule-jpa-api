@@ -21,4 +21,8 @@ public class MemberLoginRequestDto {
         return account != null || email != null;
     }
 
+    public MemberLoginRequestDto(String account, String password) {
+        this.account = account;
+        this.password = password;
+    }
 }

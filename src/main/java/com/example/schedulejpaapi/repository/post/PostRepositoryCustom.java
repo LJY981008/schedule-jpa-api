@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.repository;
+package com.example.schedulejpaapi.repository.post;
 
 import java.util.Map;
 

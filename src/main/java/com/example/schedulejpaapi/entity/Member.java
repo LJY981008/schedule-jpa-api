@@ -51,6 +51,13 @@ public class Member extends TimeStampEntity {
         this.comments = new ArrayList<>();
     }
 
+    public Member(String account, String password, String email, String name) {
+        this.account = account;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+    }
+
     public void updateName(String value) {
         this.name = value;
     }

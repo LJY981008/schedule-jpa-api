@@ -1,14 +1,11 @@
 package com.example.schedulejpaapi.util;
 
-import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.entity.Member;
-import com.example.schedulejpaapi.exceptions.custom.InvalidFieldException;
-import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
-import jakarta.servlet.http.HttpSession;
+import com.example.schedulejpaapi.exception.custom.InvalidFieldException;
+import com.example.schedulejpaapi.exception.custom.UnauthorizedException;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;

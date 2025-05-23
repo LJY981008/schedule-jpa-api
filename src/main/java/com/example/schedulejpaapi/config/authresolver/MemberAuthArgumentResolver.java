@@ -2,7 +2,7 @@ package com.example.schedulejpaapi.config.authresolver;
 
 import com.example.schedulejpaapi.constant.Const;
 import com.example.schedulejpaapi.entity.Member;
-import com.example.schedulejpaapi.exceptions.custom.UnauthorizedException;
+import com.example.schedulejpaapi.exception.custom.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.core.MethodParameter;

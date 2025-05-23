@@ -1,4 +1,4 @@
-package com.example.schedulejpaapi.repository;
+package com.example.schedulejpaapi.repository.member;
 
 import com.example.schedulejpaapi.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
