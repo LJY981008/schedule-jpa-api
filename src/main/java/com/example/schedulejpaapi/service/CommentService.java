@@ -86,7 +86,6 @@ public class CommentService {
      * @param commentId      수정할 댓글 ID
      * @param requestDto     수정할 댓글 정보 DTO{@link CommentUpdateRequestDto}
      * @param loggedInMember 로그인 멤버 정보{@link Member}
-     * @return 수정된 댓글 정보 DTO{@link CommentUpdateResponseDto}
      */
     @Transactional
     public void updateComment(
