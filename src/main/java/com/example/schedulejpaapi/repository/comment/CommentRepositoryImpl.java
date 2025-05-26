@@ -21,6 +21,13 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
         this.queryFactory = queryFactory;
     }
 
+    /**
+     * 댓글 수정
+     *
+     * @param commentId 댓글 ID
+     * @param requestMap 수정 요청 MAP
+     * @return 수정된 데이터 개수
+     */
     @Override
     public long updateComment(long commentId, Map<String, String> requestMap) {
         if(requestMap.isEmpty()) {
@@ -40,6 +47,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom{
             Path<?> qPath = updateField.get().getQPath();
             updateClause.set((StringPath) qPath, fieldValue);
         }
+
 
         return updateClause.execute();
     }

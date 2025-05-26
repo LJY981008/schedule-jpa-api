@@ -62,7 +62,7 @@ public class CommentService {
      */
     @Transactional(readOnly = true)
     public List<CommentFindResponseDto> getCommentsByPostId(Long postId) {
-        Post selectPost = getPostByIdOrElseThrow(postId);
+        Post selectPost =   getPostByIdOrElseThrow(postId);
         List<Comment> comments = commentRepository.findByPost(selectPost);
 
         return comments.stream().map(CommentFindResponseDto::new).toList();

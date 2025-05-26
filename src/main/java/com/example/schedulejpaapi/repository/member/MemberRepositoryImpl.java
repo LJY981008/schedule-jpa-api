@@ -20,6 +20,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom{
         this.queryFactory = queryFactory;
     }
 
+    /**
+     * 회원 정보 수정
+     *
+     * @param memberId 회원 ID(index)
+     * @param requestMap 수정 요청 MAP
+     * @return 수정된 데이터 개수
+     */
     @Override
     public long updateMember(long memberId, Map<String, String> requestMap) {
         if(requestMap.isEmpty()) {

@@ -21,6 +21,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         this.queryFactory = queryFactory;
     }
 
+    /**
+     * 댓글 수정
+     *
+     * @param postId 스케줄 ID
+     * @param requestMap 수정 요청 MAP
+     * @return 수정된 데이터 개수
+     */
     @Override
     public long updatePost(Long postId, Map<String, String> requestMap) {
         if(requestMap.isEmpty()) {
